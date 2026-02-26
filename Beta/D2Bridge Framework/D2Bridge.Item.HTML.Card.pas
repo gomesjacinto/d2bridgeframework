@@ -59,6 +59,7 @@ type
    FFooter: ID2BridgeItemHTMLCardFooter;
    FCardImage: ID2BridgeItemHTMLCardImage;
    FCSSClassesBody: string;
+   FCSSClassesTitleHeader: string;
    FCSSImage: string;
 {$IFNDEF FMX}
    FIsDataModel: Boolean;
@@ -77,6 +78,8 @@ type
    function FixImageIcoColSize(AColSize: string): string;
    procedure SetCSSClassesBody(AValue: string);
    function GetCSSClassesBody: string;
+   procedure SetCSSClassesTitleHeader(AValue: string);
+   function GetCSSClassesTitleHeader: string;
    procedure SetColSize(AColSize: string);
    function GetColSize: string;
    function GetTitle: string;
@@ -177,6 +180,7 @@ type
    property BorderColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetBorderColor write SetBorderColor;
    property BorderWidth: integer read GetBorderWidth write SetBorderWidth;
    property CSSClassesBody: string read GetCSSClassesBody write SetCSSClassesBody;
+   property CSSClassesTitleHeader: string read GetCSSClassesTitleHeader write SetCSSClassesTitleHeader;
    property ColSize: string read GetColSize write SetColSize;
    property Title: string read GetTitle write SetTitle;
    property TitleHeader: string read GetTitleHeader write SetTitleHeader;
@@ -327,9 +331,15 @@ function TD2BridgeItemHTMLCard.GetColSize: string;
 begin
  result:= FColSize;
 end;
+
 function TD2BridgeItemHTMLCard.GetCSSClassesBody: string;
 begin
  result:= FCSSClassesBody;
+end;
+
+function TD2BridgeItemHTMLCard.GetCSSClassesTitleHeader: string;
+begin
+ result:= FCSSClassesTitleHeader;
 end;
 
 function TD2BridgeItemHTMLCard.GetExitProc: TProc;
@@ -851,7 +861,7 @@ begin
   //FHeader + Button Close
   Add('  <div class="d2bridgecard-header card-header ' + IfThen(vShowButtonClose, 'modal-header') + ' ' + FHeader.CSSClasses + '" style="'+FHeader.HTMLStyle+'" '+FHeader.HTMLExtras+'>');
   if FHeader.Text <> '' then
-   Add('<h5 class="d2bridgecard-header-title card-title">' + IfThen(FIsModel, '{{CardModelAtt=TitleHeader}}', FHeader.Text) + '</h5>');
+   Add('<h5 class="d2bridgecard-header-title card-title ' + CSSClassesTitleHeader + '">' + IfThen(FIsModel, '{{CardModelAtt=TitleHeader}}', FHeader.Text) + '</h5>');
   if vShowButtonClose then
    Add('<button class="d2bridgecard-header-buttonclose btn-close" onclick="' +  fPrismControl.Events.Item(EventOnExit).EventJS(FD2BridgeItem.BaseClass.PrismSession, FD2BridgeItem.BaseClass.FormUUID, ExecEventProc) + '" style="width: 2em;"></button>');
   if FHeader.Items.Items.Count > 0 then
@@ -1066,6 +1076,11 @@ end;
 procedure TD2BridgeItemHTMLCard.SetCSSClassesBody(AValue: string);
 begin
  FCSSClassesBody:= AValue;
+end;
+
+procedure TD2BridgeItemHTMLCard.SetCSSClassesTitleHeader(AValue: string);
+begin
+ FCSSClassesTitleHeader:= AValue;
 end;
 
 procedure TD2BridgeItemHTMLCard.SetExitProc(const Value: TProc);

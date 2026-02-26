@@ -1011,6 +1011,8 @@ end;
   ['{CE8A093B-5966-4A3B-B23E-FA7667A8CFDC}']
   procedure SetCSSClassesBody(AValue: string);
   function GetCSSClassesBody: string;
+  procedure SetCSSClassesTitleHeader(AValue: string);
+  function GetCSSClassesTitleHeader: string;
   procedure SetColSize(AColSize: string);
   function GetColSize: string;
   function GetTitle: string;
@@ -1093,6 +1095,7 @@ end;
   property BorderWidth: integer read GetBorderWidth write SetBorderWidth;
   property ColSize: string read GetColSize write SetColSize;
   property CSSClassesBody: string read GetCSSClassesBody write SetCSSClassesBody;
+  property CSSClassesTitleHeader: string read GetCSSClassesTitleHeader write SetCSSClassesTitleHeader;
   property Title: string read GetTitle write SetTitle;
   property TitleHeader: string read GetTitleHeader write SetTitleHeader;
   property SubTitle: string read GetSubTitle write SetSubTitle;
