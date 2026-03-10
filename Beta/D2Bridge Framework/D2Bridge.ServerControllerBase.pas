@@ -53,6 +53,11 @@ uses
 {$IFDEF MSWINDOWS}
   ActiveX, Windows,
 {$ENDIF}
+  {$IFDEF LINUX}
+  BaseUnix,
+  termio,
+  Unix,
+  {$ENDIF}
   SyncObjs,
   {$IFNDEF D2BRIDGE}
   D2Bridge.Instance,
@@ -60,7 +65,7 @@ uses
 {$IFDEF D2DOCKER}
   D2Bridge.API.D2Docker.Comm,
 {$ENDIF}
-  Prism, Prism.Interfaces, Prism.Session, Prism.Types, D2Bridge.Interfaces,
+  Prism, Prism.Interfaces, Prism.Session, Prism.Types,D2Bridge.DebugUtils,  D2Bridge.Interfaces,
   D2Bridge.Manager, D2Bridge.Types, D2Bridge.Prism.Form, D2Bridge.Lang.Interfaces,
   D2Bridge.Rest.Session, D2Bridge.Rest.Server, D2Bridge.Rest.Interfaces;
 
@@ -222,6 +227,7 @@ uses
 
 
 function IsEscapePressed: Boolean;
+{$IFDEF MSWINDOWS}
 var
   InputHandle: THandle;
   InputRecord: TInputRecord;
@@ -257,6 +263,35 @@ begin
     end;
   end;
 end;
+{$ELSE}
+var
+    OldTermios, NewTermios: termios;
+    ch: Char; BytesRead: ssize_t; OldFlags: Integer;
+  begin
+    Result := False;
+    if tcgetattr(StdInputHandle, OldTermios) <> 0 then Exit;
+    NewTermios := OldTermios;
+    NewTermios.c_lflag := NewTermios.c_lflag and not (cardinal(ICANON) or cardinal(ECHO));
+    NewTermios.c_cc[VMIN] := 0;
+    NewTermios.c_cc[VTIME] := 0;
+    if tcsetattr(StdInputHandle, TCSANOW, NewTermios) <> 0 then Exit;
+    try
+      OldFlags := FpFcntl(StdInputHandle, F_GETFL, 0);
+      FpFcntl(StdInputHandle, F_SETFL, OldFlags or O_NONBLOCK);
+      try
+        ch := #0;
+        BytesRead := FpRead(StdInputHandle, ch, 1);
+        if (BytesRead = 1) and (Ord(ch) = 27) then Result := True;
+      finally
+        FpFcntl(StdInputHandle, F_SETFL, OldFlags);
+      end;
+    finally
+      tcsetattr(StdInputHandle, TCSANOW, OldTermios);
+    end;
+  end;
+{$ENDIF}
+
+
 
 
 { TD2BridgeServerControllerBase }
@@ -407,7 +442,7 @@ begin
  if (not IsD2DockerContext) and ((Not IsDebuggerPresent) {$IFnDEF FPC}or (not ReportMemoryLeaksOnShutdown){$ENDIF}) then
  begin
   {$IFDEF FPC}
-  TerminateProcess(GetCurrentProcess, 0);
+   Halt(0);//TerminateProcess(GetCurrentProcess, 0);
   {$ENDIF}
   {$IFDEF MSWINDOWS}
   ExitProcess(0);

@@ -267,8 +267,14 @@ begin
 {$ENDIF}
 
 {$IFDEF FPC}
+
+    {$IFDEF MSWINDOWS}
      sSourceFixD2BridgeLazCompile := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazCompile.bat';
      sSourceFixD2BridgeLazBuild := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazBuild.bat';
+     {$ELSE}
+     sSourceFixD2BridgeLazCompile := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazCompile.sh';
+     sSourceFixD2BridgeLazBuild := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazBuild.sh';
+     {$ENDIF}
 {$ENDIF}
 
      if WizardForm.CheckBox_Create_Project_Folder.Checked then
@@ -731,6 +737,16 @@ begin
       sFileContent:= StringReplace(sFileContent, '{D2BridgeDirectives}', sD2BridgeDirectives.Text, [rfIgnoreCase, rfReplaceAll]);
       sFileContent:= StringReplace(sFileContent, '{D2BridgePath}', IncludeTrailingPathDelimiter(WizardForm.Edit_Path_D2Bridge.Text), [rfIgnoreCase, rfReplaceAll]);
       sFileContent:= StringReplace(sFileContent, '{PathDelim}', PathDelim, [rfIgnoreCase, rfReplaceAll]);
+
+      {$IFDEF MSWINDOWS}
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazBuild}', 'FixD2BridgeLazBuild.bat', [rfIgnoreCase, rfReplaceAll]);
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazCompile}', 'FixD2BridgeLazCompile.bat', [rfIgnoreCase, rfReplaceAll]);
+      {$ELSE}
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazBuild}', 'sh FixD2BridgeLazBuild.sh', [rfIgnoreCase, rfReplaceAll]);
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazCompile}', 'sh FixD2BridgeLazCompile.sh', [rfIgnoreCase, rfReplaceAll]);
+      {$ENDIF}
+
+
 
 {$IFDEF FPC}
       if WizardForm.ComboBox_Server_Type.Text = 'Server Console (Recommended)' then

@@ -97,50 +97,56 @@ function FormatOfCurrency(AFormatSettings: TFormatSettings; FUseCurSymbol: boole
 implementation
 
 uses
-  Prism.BaseClass;
+  Prism.BaseClass
+  {$IFNDEF MSWINDOWS}
+    {$IFDEF FPC}
+  , LCLType
+  {$ENDIF}
+ {$ENDIF}
+  ;
 
 {$IFNDEF MSWINDOWS}
-const
-  VK_BACK = vkBack; {8}
-  VK_TAB = vkTab; {9}
-  VK_RETURN = vkReturn; {13}
-  VK_SHIFT = vkShift; { $10, 16}
-  VK_CONTROL = vkControl; {17}
-  VK_PAUSE = vkPause; {19}
+const                           
+  VK_BACK = vk_Back; {8}
+  VK_TAB = vk_Tab; {9}
+  VK_RETURN = vk_Return; {13}
+  VK_SHIFT = vk_Shift; { $10, 16}
+  VK_CONTROL = vk_Control; {17}
+  VK_PAUSE = vk_Pause; {19}
 
-  VK_CAPITAL = vkCapital; {20}
-  VK_SPACE = vkSpace; { $20}
-  VK_ESCAPE = vkEscape; {27}
+  VK_CAPITAL = vk_Capital; {20}
+  VK_SPACE = vk_Space; { $20}
+  VK_ESCAPE = vk_Escape; {27}
 
-  VK_PRIOR = vkPrior; {33}
-  VK_NEXT = vkNext; {34}
-  VK_END = vkEnd; {35}
-  VK_HOME = vkHome; {35}
+  VK_PRIOR = vk_Prior; {33}
+  VK_NEXT = vk_Next; {34}
+  VK_END = vk_End; {35}
+  VK_HOME = vk_Home; {35}
 
-  VK_LEFT = vkLeft; {37}
-  VK_UP = vkUp; {38}
-  VK_RIGHT = vkRight; {39}
-  VK_DOWN = vkDown; {40}
+  VK_LEFT = vk_Left; {37}
+  VK_UP = vk_Up; {38}
+  VK_RIGHT = vk_Right; {39}
+  VK_DOWN = vk_down; {40}
 
-  VK_SNAPSHOT = vkSnapShot; {44}
-  VK_INSERT = vkInsert; {45}
-  VK_DELETE = vkDelete; {46}
+  VK_SNAPSHOT = vk_SnapShot; {44}
+  VK_INSERT = vk_Insert; {45}
+  VK_DELETE = vk_Delete; {46}
 
-  VK_F1 = vkF1; {112}
-  VK_F2 = vkF2; {113}
-  VK_F3 = vkF3; {114}
-  VK_F4 = vkF4; {115}
-  VK_F5 = vkF5; {116}
-  VK_F6 = vkF6; {117}
-  VK_F7 = vkF7; {118}
-  VK_F8 = vkF8; {119}
-  VK_F9 = vkF9; {120}
-  VK_F10 = vkF10; {121}
-  VK_F11 = vkF11; {122}
-  VK_F12 = vkF12; {123}
+  VK_F1 = vk_F1; {112}
+  VK_F2 = vk_F2; {113}
+  VK_F3 = vk_F3; {114}
+  VK_F4 = vk_F4; {115}
+  VK_F5 = vk_F5; {116}
+  VK_F6 = vk_F6; {117}
+  VK_F7 = vk_F7; {118}
+  VK_F8 = vk_F8; {119}
+  VK_F9 = vk_F9; {120}
+  VK_F10 = vk_F10; {121}
+  VK_F11 = vk_F11; {122}
+  VK_F12 = vk_F12; {123}
 
-  VK_NUMLOCK = vkNumLock; {144}
-  VK_SCROLL = vkScroll; {145}
+  VK_NUMLOCK = vk_NumLock; {144}
+  VK_SCROLL = vk_Scroll; {145}
 {$IFEND}
 
 

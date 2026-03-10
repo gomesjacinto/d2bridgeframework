@@ -44,7 +44,7 @@ uses
 {$ELSE}
   Forms,
 {$ENDIF}
-  Prism.Interfaces, Prism.Session;
+  D2Bridge.DebugUtils, Prism.Interfaces, Prism.Session;
 
 type
  TPrismSessions = class(TInterfacedPersistent, IPrismSessions)

@@ -203,6 +203,8 @@ begin
 end;
 
 constructor TPrismServerTCP.Create;
+var
+   lstDirSep : String;
 begin
   inherited Create;
 
@@ -210,7 +212,8 @@ begin
 
   IdServerIOHandlerSSLOpenSSL := nil;
 
-  FRootDirectory:= 'wwwroot' + PathDelim;
+  lstDirSep := PathDelim;
+  FRootDirectory:= 'wwwroot' + lstDirSep;
 
   FAppBase:= '/';
 
@@ -1474,6 +1477,7 @@ var
  xResponseFileName, xResponseFileContent, xResponseRedirect, xMimeType: string;
  xPage429: string;
  vAppBase: string;
+ vBytes  : TBytes;
 begin
  try
   xContext:= TIdContext(varContext.AsObject);
@@ -1542,8 +1546,14 @@ begin
 
       if xPrismResponse.Content <> '' then
        if Assigned(xIOHandle) and (xContext.Connection <> nil) then
-        xIOHandle.Write(xPrismResponse.Content, IndyTextEncoding_UTF8);
-
+       begin
+        {$IFDEF MSWINDOWS}
+          xIOHandle.Write(xPrismResponse.Content, IndyTextEncoding_UTF8);
+        {$ELSE}
+          vBytes := TEncoding.UTF8.GetBytes(xPrismResponse.Content);
+          xIOHandle.Write(vBytes);
+        {$ENDIF}
+       end;
       try
        DoFinishedGetHTML(xPrismWSContext);
       except
@@ -1559,7 +1569,13 @@ begin
        xIOHandle.WriteLn('D2DockerInstance: ' + PrismBaseClass.ServerController.D2DockerInstanceAlias);
 {$ENDIF}
       xIOHandle.WriteLn('');
-      xIOHandle.Write(xPage429, IndyTextEncoding_UTF8);
+      {$IFDEF MSWINDOWS}
+        xIOHandle.Write(xPage429, IndyTextEncoding_UTF8);
+      {$ELSE}
+        vBytes := TEncoding.UTF8.GetBytes(xPage429);
+        xIOHandle.Write(vBytes);
+      {$ENDIF}
+
      end;
    except
    end;

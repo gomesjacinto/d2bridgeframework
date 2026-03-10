@@ -39,7 +39,7 @@ uses
 {$IFDEF HAS_UNIT_SYSTEM_THREADING}
   System.Threading,
 {$ENDIF}
-  IdSMTP, IdSSLOpenSSL, IdMessage, IdExplicitTLSClientServerBase, IdAttachmentFile, idText,
+  IdSMTP, IdSSLOpenSSL, IdMessage, IdExplicitTLSClientServerBase, IdAttachmentFile, IdText,
   D2Bridge.Interfaces, Prism.Server.HTTP.Commom
 {$IFDEF FMX}
 

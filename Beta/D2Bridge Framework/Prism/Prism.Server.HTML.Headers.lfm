@@ -1,7 +1,7 @@
 object PrismServerHTMLHeaders: TPrismServerHTMLHeaders
   OldCreateOrder = False
   Height = 433
-  HorizontalOffset = 0
-  VerticalOffset = 0
+  HorizontalOffset = 66
+  VerticalOffset = 32
   Width = 705
 end

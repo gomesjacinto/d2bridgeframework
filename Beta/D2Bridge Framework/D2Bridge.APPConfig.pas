@@ -78,7 +78,7 @@ type
 implementation
 
 Uses
- D2Bridge.APPConfig.Database, D2Bridge.AppConfig.Version, D2Bridge.AppConfig.Path, D2Bridge.APPConfig.INIConfig,
+ D2Bridge.APPConfig.Database, D2Bridge.APPConfig.Version, D2Bridge.APPConfig.Path, D2Bridge.APPConfig.INIConfig,
  D2Bridge.APPConfig.Custom, D2Bridge.JSON;
 
 { TD2BridgeAPPConfig }

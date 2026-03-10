@@ -39,7 +39,7 @@ Uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}
- IdSSLOpenSSL, SyncObjs;
+ D2Bridge.DebugUtils,IdSSLOpenSSL, SyncObjs;
 
 type
  TPrismThreadServerTCP = class(TThread)
@@ -194,7 +194,7 @@ begin
         Sleep(10000);
 
        {$IFDEF FPC}
-       TerminateProcess(GetCurrentProcess, 0);
+       Halt(0);//TerminateProcess(GetCurrentProcess, 0);
        {$ENDIF}
        {$IFDEF MSWINDOWS}
        ExitProcess(0);

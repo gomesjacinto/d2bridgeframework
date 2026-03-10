@@ -164,7 +164,7 @@ type
 implementation
 
 Uses
- Prism.BaseClass,
+ Prism.BaseClass, D2Bridge.DebugUtils,
  D2Bridge.Rest.Session, D2Bridge.Rest.Server;
 
 
