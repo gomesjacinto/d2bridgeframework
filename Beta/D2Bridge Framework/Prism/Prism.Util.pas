@@ -100,13 +100,13 @@ uses
   Prism.BaseClass
   {$IFNDEF MSWINDOWS}
     {$IFDEF FPC}
-  , LCLType
+   ,LCLType
   {$ENDIF}
  {$ENDIF}
-  ;
+ ;
 
 {$IFNDEF MSWINDOWS}
-const                           
+const
   VK_BACK = vk_Back; {8}
   VK_TAB = vk_Tab; {9}
   VK_RETURN = vk_Return; {13}

@@ -61,9 +61,9 @@ uses
   {$ENDIF}
 {$ELSE}
   base64, LCLIntf, URIParser,
-  {$IFDEF LINUX}
-    BaseUnix,
-  {$ENDIF}
+{$IFDEF LINUX}
+  BaseUnix,
+{$ENDIF}
 {$ENDIF}
 {$IFDEF FMX}
   FMX.Controls, FMX.Forms, FMX.TabControl, FMX.Platform, FMX.Graphics,
@@ -77,7 +77,7 @@ uses
 
 
 {$IFDEF FPC}
-  {$IFDEF MSWINDOWS}
+ {$IFDEF MSWINDOWS}
 // FPC/Windows: declara as APIs Win32 que podem nao existir nos headers do FPC
 function ProcessIdToSessionId(dwProcessId: DWORD; var pSessionId: DWORD): BOOL; stdcall;
   external 'kernel32' name 'ProcessIdToSessionId';
@@ -85,7 +85,7 @@ function OpenInputDesktop(dwFlags: DWORD; fInherit: BOOL; dwDesiredAccess: DWORD
   external 'user32' name 'OpenInputDesktop';
 function CloseDesktop(hDesktop: THandle): BOOL; stdcall;
   external 'user32' name 'CloseDesktop';
-  {$ENDIF}
+ {$ENDIF}
 {$ENDIF}
 
 
@@ -420,7 +420,7 @@ function Base64FromFile(AFile: string): string;
 var
   Output, Input: TStringStream;
 {$IFDEF FPC}
-  Encoder:  TBase64EncodingStream;
+  Encoder: TBase64EncodingStream;
 {$ENDIF}
 begin
   try
@@ -484,22 +484,20 @@ end;
 function URLEncode(AURI: string): string;
 begin
 {$IFnDEF FPC}
-  result := URIEncode(AURI);
+ result:= URIEncode(AURI);
 {$ELSE}
   // No FPC/Linux: EncodeURI do URIParser codifica caracteres especiais corretamente
-  {$IFDEF MSWINDOWS}
-   Result := string(FilenameToURI(AnsiString(AURI))); //EncodeURI(AURI);
+ {$IFDEF MSWINDOWS}
+ Result := string(FilenameToURI(AnsiString(AURI))); //EncodeURI(AURI);
  {$ELSE}
-   Result:= string(FilenameToURI(AnsiString(AURI)));
-  {$ENDIF}
+ Result:= string(FilenameToURI(AnsiString(AURI)));
+ {$ENDIF}
 {$ENDIF}
 end;
 
 function URLDecode(AURI: string): string;
-var
-  vAnsi: AnsiString;
 begin
- {$IFnDEF FPC}
+{$IFnDEF FPC}
  result:= TNetEncoding.URL.Decode(AURI);
 {$ELSE}
  URIToFilename(AURI, Result);
@@ -1075,32 +1073,32 @@ function IsRunningAsService: Boolean;
 {$IFDEF FPC}
 // Linux: processo é serviço quando pai é PID 1 (systemd/init) e sem terminal
 var
-  PProcFile: string;
-  F: TextFile;
-  Line: string;
-  PPid: Integer;
+ PProcFile: string;
+ F: TextFile;
+ Line: string;
+ PPid: Integer;
 begin
-  Result := False;
-  PProcFile := Format('/proc/%d/status', [GetProcessID]);
-  if not FileExists(PProcFile) then
-    Exit;
-  AssignFile(F, PProcFile);
-  try
-    Reset(F);
-    while not EOF(F) do
-    begin
-      ReadLn(F, Line);
-      if Copy(Line, 1, 5) = 'PPid:' then
-      begin
-        PPid := StrToIntDef(Trim(Copy(Line, 6, MaxInt)), -1);
-        // Se o pai é o PID 1 (systemd/init), provavelmente é um serviço
-        Result := (PPid = 1);
-        Break;
-      end;
-    end;
-  finally
-    CloseFile(F);
+ Result := False;
+ PProcFile := Format('/proc/%d/status', [GetProcessID]);
+ if not FileExists(PProcFile) then
+  Exit;
+ AssignFile(F, PProcFile);
+ try
+  Reset(F);
+  while not EOF(F) do
+  begin
+   ReadLn(F, Line);
+   if Copy(Line, 1, 5) = 'PPid:' then
+   begin
+    PPid := StrToIntDef(Trim(Copy(Line, 6, MaxInt)), -1);
+    // Se o pai é o PID 1 (systemd/init), provavelmente é um serviço
+    Result := (PPid = 1);
+    Break;
+   end;
   end;
+ finally
+  CloseFile(F);
+ end;
 end;
 {$ELSE}
 begin
@@ -1109,6 +1107,5 @@ begin
 end;
 {$ENDIF}
 {$ENDIF}
-
 
 end.

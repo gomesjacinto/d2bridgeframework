@@ -35,7 +35,7 @@ unit Prism.Options;
 interface
 
 uses
-  Classes, SysUtils,   D2Bridge.DebugUtils,
+  Classes, SysUtils, D2Bridge.DebugUtils,
 {$IFDEF HAS_UNIT_SYSTEM_IOUTILS}
   System.IOUtils,
 {$ENDIF}

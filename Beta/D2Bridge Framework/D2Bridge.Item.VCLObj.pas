@@ -48,7 +48,7 @@ uses
   Menus, StdCtrls, Forms, Graphics,
 {$ENDIF}
   Prism.Interfaces, Prism.Types,
-  D2Bridge.BaseClass, D2Bridge.Item, D2bridge.Interfaces;
+  D2Bridge.BaseClass, D2Bridge.Item, D2Bridge.Interfaces;
 
 
 type

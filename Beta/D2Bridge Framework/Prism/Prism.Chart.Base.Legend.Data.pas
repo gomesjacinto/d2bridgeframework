@@ -37,7 +37,7 @@ interface
 Uses
  Classes, SysUtils, Variants,
  Generics.Collections,
- Prism.interfaces, Prism.Types;
+ Prism.Interfaces, Prism.Types;
 
 
 type
