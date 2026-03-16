@@ -9,10 +9,11 @@
         <Filename Value="Lazarus.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="D2BridgeWebAppWithLCL"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="11"/>
         <CursorPos X="12" Y="28"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\D2Bridge Framework\D2Bridge.ServerControllerBase.pas"/>
@@ -20,7 +21,7 @@
         <ComponentName Value="D2BridgeServerControllerBase"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\D2Bridge Framework\Prism\Prism.SessionBase.pas"/>
@@ -28,7 +29,7 @@
         <ComponentName Value="PrismSessionBase"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
       </Unit>
       <Unit>
         <Filename Value="Lazarus_Session.pas"/>
@@ -39,7 +40,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="22"/>
         <CursorPos Y="42"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
       </Unit>
       <Unit>
         <Filename Value="LazarusWebApp.pas"/>
@@ -50,15 +51,17 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="64"/>
         <CursorPos X="6" Y="90"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
       </Unit>
       <Unit>
         <Filename Value="Unit_D2Bridge_Server_Console.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
         <TopLine Value="231"/>
         <CursorPos Y="245"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="UnitMenu.pas"/>
@@ -66,11 +69,11 @@
         <ComponentName Value="FormMenu"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="-1"/>
         <TopLine Value="170"/>
         <CursorPos X="26" Y="176"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Unit_Login.pas"/>
@@ -78,10 +81,12 @@
         <ComponentName Value="Form_Login"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="245"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="257"/>
         <CursorPos X="25" Y="245"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="unitcontrols.pas"/>
@@ -92,7 +97,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="247"/>
         <CursorPos Y="249"/>
-        <UsageCount Value="75"/>
+        <UsageCount Value="73"/>
       </Unit>
       <Unit>
         <Filename Value="unitdbgrid.pas"/>
@@ -103,15 +108,16 @@
         <UnitName Value="unitDBGrid"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="8"/>
-        <UsageCount Value="49"/>
+        <UsageCount Value="47"/>
       </Unit>
       <Unit>
         <Filename Value="D2BridgeFormTemplate.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="4"/>
         <TopLine Value="35"/>
         <CursorPos Y="46"/>
-        <UsageCount Value="48"/>
+        <UsageCount Value="46"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="unitdbgridedit.pas"/>
@@ -122,7 +128,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="94"/>
         <CursorPos X="27" Y="102"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="41"/>
       </Unit>
       <Unit>
         <Filename Value="unitstringgrid.pas"/>
@@ -132,7 +138,7 @@
         <UnitName Value="unitStringGrid"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="7"/>
-        <UsageCount Value="41"/>
+        <UsageCount Value="39"/>
       </Unit>
       <Unit>
         <Filename Value="unitqrcode.pas"/>
@@ -144,7 +150,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="167"/>
         <CursorPos Y="203"/>
-        <UsageCount Value="39"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitcardgriddatamodel.pas"/>
@@ -156,7 +162,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="64"/>
         <CursorPos X="40" Y="65"/>
-        <UsageCount Value="38"/>
+        <UsageCount Value="36"/>
       </Unit>
       <Unit>
         <Filename Value="unitkanban.pas"/>
@@ -168,7 +174,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="114"/>
         <CursorPos X="41" Y="128"/>
-        <UsageCount Value="37"/>
+        <UsageCount Value="35"/>
       </Unit>
       <Unit>
         <Filename Value="unitauth.pas"/>
@@ -179,7 +185,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="39"/>
         <CursorPos X="16" Y="66"/>
-        <UsageCount Value="37"/>
+        <UsageCount Value="35"/>
       </Unit>
       <Unit>
         <Filename Value="unitqrcodereader.pas"/>
@@ -188,7 +194,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitQRCodeReader"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="30"/>
       </Unit>
       <Unit>
         <Filename Value="unitcamera.pas"/>
@@ -196,7 +202,7 @@
         <ComponentName Value="FormCamera"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UnitCamera"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="30"/>
       </Unit>
       <Unit>
         <Filename Value="unitmarkdowneditor.pas"/>
@@ -204,7 +210,7 @@
         <ComponentName Value="FormMarkDownEditor"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UnitMarkDownEditor"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="30"/>
       </Unit>
       <Unit>
         <Filename Value="unitwysiwygeditor.pas"/>
@@ -212,7 +218,7 @@
         <ComponentName Value="FormWYSIWYGEditor"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UnitWYSIWYGEditor"/>
-        <UsageCount Value="32"/>
+        <UsageCount Value="30"/>
       </Unit>
       <Unit>
         <Filename Value="unitinfoauth.pas"/>
@@ -264,10 +270,11 @@
       </Unit>
       <Unit>
         <Filename Value="..\..\D2Bridge Framework\Prism\Prism.BaseClass.pas"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="823"/>
         <CursorPos X="27" Y="842"/>
         <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\D2Bridge Framework\Prism\Prism.DataWare.Field.pas"/>
@@ -419,20 +426,139 @@
       </Unit>
       <Unit>
         <Filename Value="..\..\D2Bridge Framework\Prism\Prism.Session.pas"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="531"/>
         <CursorPos X="8" Y="538"/>
         <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="..\..\D2Bridge Framework\D2Bridge.Image.Interfaces.pas"/>
-        <EditorIndex Value="-1"/>
+        <EditorIndex Value="1"/>
         <TopLine Value="38"/>
         <CursorPos X="13" Y="55"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory HistoryIndex="28">
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="131" Column="21" TopLine="111"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="88" Column="52" TopLine="65"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="74" Column="94" TopLine="65"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="76" Column="27" TopLine="66"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="171" Column="64" TopLine="167"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\D2Bridge Framework\Prism\Prism.BaseClass.pas"/>
+        <Caret Line="841" Column="19" TopLine="823"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="177" Column="25" TopLine="172"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="40" Column="15" TopLine="25"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="182" TopLine="174"/>
+      </Position>
+      <Position>
+        <Filename Value="Lazarus.lpr"/>
+        <Caret Line="24" Column="21" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="Lazarus.lpr"/>
+        <Caret Line="28" Column="12" TopLine="11"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="18" Column="3"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="175" Column="24" TopLine="167"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="89" Column="12" TopLine="78"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="52" Column="11" TopLine="36"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\D2Bridge Framework\Prism\Prism.BaseClass.pas"/>
+        <Caret Line="840" TopLine="823"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\D2Bridge Framework\Prism\Prism.Session.pas"/>
+        <Caret Line="571" TopLine="550"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="128" TopLine="112"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\D2Bridge Framework\Prism\Prism.Session.pas"/>
+        <Caret Line="190" Column="16" TopLine="175"/>
+      </Position>
+      <Position>
+        <Filename Value="..\..\D2Bridge Framework\Prism\Prism.Session.pas"/>
+        <Caret Line="538" Column="8" TopLine="531"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="41" Column="23" TopLine="37"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="128" TopLine="112"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="44" Column="16" TopLine="22"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="162" Column="22" TopLine="144"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="187" Column="13" TopLine="159"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="188" Column="13" TopLine="160"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="187" Column="13" TopLine="159"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="176" Column="43" TopLine="159"/>
+      </Position>
+      <Position>
+        <Filename Value="UnitMenu.pas"/>
+        <Caret Line="44" Column="14" TopLine="32"/>
+      </Position>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes ActiveMode=""/>

@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, Rtti, Generics.Collections, SysUtils,
-  D2Bridge.Interfaces, Prism.interfaces, Prism.Types;
+  D2Bridge.Interfaces, Prism.Interfaces, Prism.Types;
 
 type
  TD2BridgeFormComponentHelperItems = class;

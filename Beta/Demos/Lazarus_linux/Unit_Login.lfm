@@ -1,7 +1,7 @@
 object Form_Login: TForm_Login
-  Left = 514
+  Left = 515
   Height = 434
-  Top = 98
+  Top = 215
   Width = 299
   BorderIcons = [biSystemMenu]
   Caption = 'Form Login'
@@ -44,7 +44,7 @@ object Form_Login: TForm_Login
       Left = 95
       Height = 30
       Top = 115
-      Width = 55
+      Width = 51
       Alignment = taCenter
       Caption = 'Login'
       Font.Color = clWindowText
@@ -54,7 +54,7 @@ object Form_Login: TForm_Login
     end
     object Edit_UserName: TEdit
       Left = 18
-      Height = 34
+      Height = 23
       Top = 167
       Width = 197
       TabOrder = 0
@@ -62,7 +62,7 @@ object Form_Login: TForm_Login
     end
     object Edit_Password: TEdit
       Left = 18
-      Height = 34
+      Height = 23
       Top = 214
       Width = 154
       EchoMode = emPassword

@@ -36,7 +36,7 @@ interface
 
 Uses
  Classes, SysUtils, Variants,
- Prism.interfaces, Prism.Types;
+ Prism.Interfaces, Prism.Types;
 
 type
  TPrismChartBaseLegend = class(TInterfacedPersistent, IPrismChartBaseLegend)

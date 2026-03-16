@@ -135,15 +135,12 @@ var
  vPrismSession: TPrismSession;
  FThreadID: Integer;
  vComponent: TComponent;
- FThreadIDTemp  : Integer;
-
 begin
  Result:= nil;
 
  FThreadID:= TThread.CurrentThread.ThreadID;
- FThreadIDTemp := MainThreadID;
 
- if (FThreadID <> FThreadIDTemp) then
+ if (FThreadID <> MainThreadID) then
  begin
   try
    vPrismSession:= (PrismBaseClass.Sessions.FromThreadID(FThreadID, false) as TPrismSession);

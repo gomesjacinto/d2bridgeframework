@@ -46,7 +46,8 @@ uses
 type
   TD2BridgeServerConsole = class
   private
-    class var
+    class
+     var
      {$IFDEF MSWINDOWS}
       hIn: THandle;
       hTimer: THandle;
@@ -65,7 +66,7 @@ type
     class function ConsoleWidth: Integer;
 
     {$IFNDEF MSWINDOWS}
-        class procedure ReadLineWithTimeout(const TimeoutSec: Integer);
+    class procedure ReadLineWithTimeout(const TimeoutSec: Integer);
     {$ENDIF}
 
   public
@@ -125,7 +126,6 @@ begin
 
   while ReadConsoleInput(TD2BridgeServerConsole.hIn, IR, 1, nEvents) do
   begin
-
     if (IR.EventType = KEY_EVENT) and
       (TKeyEventRecord(IR.Event).wVirtualKeyCode = VK_RETURN)
       and (TKeyEventRecord(IR.Event).bKeyDown) then
@@ -481,8 +481,8 @@ begin
   Coord.Y := Y;
   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Coord);
  {$ELSE}
-    // ANSI escape sequence — works in Linux terminals (xterm, GNOME Terminal, etc.)
-    Write(Format(#27'[%d;%dH', [Y + 1, X + 1]));
+  // ANSI escape sequence — works in Linux terminals (xterm, GNOME Terminal, etc.)
+  Write(Format(#27'[%d;%dH', [Y + 1, X + 1]));
  {$ENDIF}
 end;
 

@@ -51,7 +51,7 @@ uses
 {$ENDIF}
   Prism.Interfaces, Prism.Events, Prism.Session, Prism.Form.Timer, Prism.Types,
   Prism.CallBack,
-  D2bridge.JSON, D2Bridge.Forms;
+  D2Bridge.JSON, D2Bridge.Forms;
 
 
 type

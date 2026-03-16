@@ -271,10 +271,10 @@ begin
     {$IFDEF MSWINDOWS}
      sSourceFixD2BridgeLazCompile := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazCompile.bat';
      sSourceFixD2BridgeLazBuild := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazBuild.bat';
-     {$ELSE}
+    {$ELSE}
      sSourceFixD2BridgeLazCompile := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazCompile.sh';
      sSourceFixD2BridgeLazBuild := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazBuild.sh';
-     {$ENDIF}
+    {$ENDIF}
 {$ENDIF}
 
      if WizardForm.CheckBox_Create_Project_Folder.Checked then

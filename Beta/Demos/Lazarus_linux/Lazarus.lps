@@ -8,7 +8,7 @@
         <Filename Value="Lazarus.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="D2BridgeWebAppWithLCL"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="../../D2Bridge Framework/D2Bridge.ServerControllerBase.pas"/>
@@ -18,7 +18,7 @@
         <ResourceBaseClass Value="DataModule"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="26" Y="4"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="../../D2Bridge Framework/Prism/Prism.SessionBase.pas"/>
@@ -26,7 +26,7 @@
         <ComponentName Value="PrismSessionBase"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="Lazarus_Session.pas"/>
@@ -34,7 +34,7 @@
         <ComponentName Value="LazarusSession"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="LazarusWebApp.pas"/>
@@ -42,14 +42,15 @@
         <ComponentName Value="LazarusWebAppGlobal"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="Unit_D2Bridge_Server_Console.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="467"/>
-        <CursorPos X="55" Y="471"/>
-        <UsageCount Value="21"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="447"/>
+        <CursorPos X="61" Y="454"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -58,7 +59,7 @@
         <ComponentName Value="FormMenu"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="Unit_Login.pas"/>
@@ -66,10 +67,10 @@
         <ComponentName Value="Form_Login"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <CursorPos X="43" Y="6"/>
-        <UsageCount Value="21"/>
+        <TopLine Value="55"/>
+        <CursorPos X="38" Y="75"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -79,7 +80,7 @@
         <ComponentName Value="FormControls"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitdbgrid.pas"/>
@@ -88,12 +89,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitDBGrid"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="D2BridgeFormTemplate.pas"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitdbgridedit.pas"/>
@@ -101,7 +102,7 @@
         <ComponentName Value="FormDBGridEdit"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitDBGridEdit"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitstringgrid.pas"/>
@@ -109,7 +110,7 @@
         <ComponentName Value="FormStringGrid"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitStringGrid"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitqrcode.pas"/>
@@ -118,7 +119,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitQRCode"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitcardgriddatamodel.pas"/>
@@ -127,7 +128,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitCardGridDataModel"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitkanban.pas"/>
@@ -136,19 +137,18 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitKanban"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitauth.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormAuth"/>
-        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitAuth"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="33"/>
         <CursorPos X="15" Y="44"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitqrcodereader.pas"/>
@@ -157,7 +157,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unitQRCodeReader"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitcamera.pas"/>
@@ -165,7 +165,7 @@
         <ComponentName Value="FormCamera"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UnitCamera"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitmarkdowneditor.pas"/>
@@ -173,7 +173,7 @@
         <ComponentName Value="FormMarkDownEditor"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UnitMarkDownEditor"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
       <Unit>
         <Filename Value="unitwysiwygeditor.pas"/>
@@ -181,7 +181,7 @@
         <ComponentName Value="FormWYSIWYGEditor"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UnitWYSIWYGEditor"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="37"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="4">

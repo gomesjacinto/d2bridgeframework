@@ -203,8 +203,6 @@ begin
 end;
 
 constructor TPrismServerTCP.Create;
-var
-   lstDirSep : String;
 begin
   inherited Create;
 
@@ -212,8 +210,7 @@ begin
 
   IdServerIOHandlerSSLOpenSSL := nil;
 
-  lstDirSep := PathDelim;
-  FRootDirectory:= 'wwwroot' + lstDirSep;
+  FRootDirectory:= 'wwwroot' + PathDelim;
 
   FAppBase:= '/';
 

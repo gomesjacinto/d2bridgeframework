@@ -1,8 +1,8 @@
 object D2BridgeServerControllerBase: TD2BridgeServerControllerBase
   OldCreateOrder = False
   Height = 422
-  HorizontalOffset = 557
-  VerticalOffset = 284
+  HorizontalOffset = 556
+  VerticalOffset = 328
   Width = 684
   object CDSLog: TBufDataset
     FieldDefs = <>

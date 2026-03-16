@@ -35,43 +35,43 @@ unit D2Bridge.APPConfig.Version;
 interface
 
 uses
-  Classes, SysUtils, IniFiles, TypInfo,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF}
-  {$IFDEF LINUX}
-  baseunix,
-  linux,
-  {$ENDIF}
-  D2Bridge.Interfaces;
+ Classes, SysUtils, IniFiles, TypInfo,
+{$IFDEF MSWINDOWS}
+ Windows,
+{$ENDIF}
+{$IFDEF LINUX}
+ baseunix,
+ linux,
+{$ENDIF}
+ D2Bridge.Interfaces;
 
 type
-  TD2BridgeAppConfigVersion = class(TInterfacedPersistent, ID2BridgeAPPConfigVersion)
+ TD2BridgeAppConfigVersion = class(TInterfacedPersistent, ID2BridgeAPPConfigVersion)
   private
-    FBuild: Integer;
-    FMajor: Integer;
-    FMinor: Integer;
-    FRelease: Integer;
-    function GetBuild: Integer;
-    function GetMajor: Integer;
-    function GetMinor: Integer;
-    function GetRelease: Integer;
-    function GetVersionStr: string;
-    procedure SetBuild(const Value: Integer);
-    procedure SetMajor(const Value: Integer);
-    procedure SetMinor(const Value: Integer);
-    procedure SetRelease(const Value: Integer);
-    procedure SetVersionStr(const Value: string);
+   FBuild: Integer;
+   FMajor: Integer;
+   FMinor: Integer;
+   FRelease: Integer;
+   function GetBuild: Integer;
+   function GetMajor: Integer;
+   function GetMinor: Integer;
+   function GetRelease: Integer;
+   function GetVersionStr: string;
+   procedure SetBuild(const Value: Integer);
+   procedure SetMajor(const Value: Integer);
+   procedure SetMinor(const Value: Integer);
+   procedure SetRelease(const Value: Integer);
+   procedure SetVersionStr(const Value: string);
   public
-    constructor Create;
+   constructor Create;
 
   published
-    property Build: Integer read GetBuild write SetBuild;
-    property Major: Integer read GetMajor write SetMajor;
-    property Minor: Integer read GetMinor write SetMinor;
-    property Release: Integer read GetRelease write SetRelease;
-    property VersionStr: string read GetVersionStr write SetVersionStr;
-  end;
+   property Build: Integer read GetBuild write SetBuild;
+   property Major: Integer read GetMajor write SetMajor;
+   property Minor: Integer read GetMinor write SetMinor;
+   property Release: Integer read GetRelease write SetRelease;
+   property VersionStr: string read GetVersionStr write SetVersionStr;
+ end;
 
 implementation
 
@@ -85,14 +85,14 @@ var
 {$ENDIF}
 {$IFDEF LINUX}
 var
-  FileName: string;
-  VersionFile: TextFile;
-  VersionLine: string;
-  FileStream: TFileStream;
-  Buffer: array[0..255] of Byte;
-  BytesRead: Integer;
-  VersionStr: string;
-  Major, Minor, Release, Build: Integer;
+ FileName: string;
+ VersionFile: TextFile;
+ VersionLine: string;
+ FileStream: TFileStream;
+ Buffer: array[0..255] of Byte;
+ BytesRead: Integer;
+ VersionStr: string;
+ Major, Minor, Release, Build: Integer;
 {$ENDIF}
 begin
   {$IFDEF MSWINDOWS}
@@ -181,103 +181,103 @@ end;
 
 constructor TD2BridgeAppConfigVersion.Create;
 begin
-  inherited;
+ inherited;
 
-  FMajor := -1;
-  FMinor := -1;
-  FRelease := -1;
-  FBuild := -1;
+ FMajor:= -1;
+ FMinor:= -1;
+ FRelease:= -1;
+ FBuild:= -1;
 end;
 
 function TD2BridgeAppConfigVersion.GetBuild: Integer;
 begin
-  if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
-    SetVersionStr(GetVersionStr);
+ if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
+  SetVersionStr(GetVersionStr);
 
-  Result := FBuild;
+ Result := FBuild;
 end;
 
 function TD2BridgeAppConfigVersion.GetMajor: Integer;
 begin
-  if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
-    SetVersionStr(GetVersionStr);
+ if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
+  SetVersionStr(GetVersionStr);
 
-  Result := FMajor;
+ Result := FMajor;
 end;
 
 function TD2BridgeAppConfigVersion.GetMinor: Integer;
 begin
-  if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
-    SetVersionStr(GetVersionStr);
+ if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
+  SetVersionStr(GetVersionStr);
 
-  Result := FMinor;
+ Result := FMinor;
 end;
 
 function TD2BridgeAppConfigVersion.GetRelease: Integer;
 begin
-  if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
-    SetVersionStr(GetVersionStr);
+ if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
+  SetVersionStr(GetVersionStr);
 
-  Result := FRelease;
+ Result := FRelease;
 end;
 
 function TD2BridgeAppConfigVersion.GetVersionStr: string;
 begin
-  if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
-    Result := GetExecutableVersion
-  else
-    Result := Format('%d.%d.%d.%d', [FMajor, FMinor, FRelease, FBuild]);
+ if (FMajor < 0) and (FMinor < 0) and (FRelease < 0) and (FBuild < 0) then
+  Result := GetExecutableVersion
+ else
+  Result := Format('%d.%d.%d.%d', [FMajor, FMinor, FRelease, FBuild]);
 end;
 
 procedure TD2BridgeAppConfigVersion.SetBuild(const Value: Integer);
 begin
-  FBuild := Value;
+ FBuild := Value;
 end;
 
 procedure TD2BridgeAppConfigVersion.SetMajor(const Value: Integer);
 begin
-  FMajor := Value;
+ FMajor := Value;
 end;
 
 procedure TD2BridgeAppConfigVersion.SetMinor(const Value: Integer);
 begin
-  FMinor := Value;
+ FMinor := Value;
 end;
 
 procedure TD2BridgeAppConfigVersion.SetRelease(const Value: Integer);
 begin
-  FRelease := Value;
+ FRelease := Value;
 end;
 
 procedure TD2BridgeAppConfigVersion.SetVersionStr(const Value: string);
 var
-  Parts: TArray<string>;
-  i: Integer;
-  TempStr: string;
+ Parts: TArray<string>;
+ i: Integer;
+ TempStr: string;
 begin
-  // Remove qualquer texto adicional (como -DEBUG)
-  TempStr := Value;
-  i := Pos('-', TempStr);
-  if i > 0 then
-    TempStr := Copy(TempStr, 1, i - 1);
+ // Remove qualquer texto adicional (como -DEBUG)
+ TempStr := Value;
+ i := Pos('-', TempStr);
+ if i > 0 then
+  TempStr := Copy(TempStr, 1, i - 1);
+ 
+ Parts := TempStr.Split(['.']);
   
-  Parts := TempStr.Split(['.']);
+ FMajor := 0;
+ FMinor := 0;
+ FRelease := 0;
+ FBuild := 0;
+ 
+ if Length(Parts) > 0 then FMajor := StrToIntDef(Parts[0], 1);
+ if Length(Parts) > 1 then FMinor := StrToIntDef(Parts[1], 0);
+ if Length(Parts) > 2 then FRelease := StrToIntDef(Parts[2], 0);
+ if Length(Parts) > 3 then FBuild := StrToIntDef(Parts[3], 0);
   
-  FMajor := 0;
-  FMinor := 0;
-  FRelease := 0;
-  FBuild := 0;
-  
-  if Length(Parts) > 0 then FMajor := StrToIntDef(Parts[0], 1);
-  if Length(Parts) > 1 then FMinor := StrToIntDef(Parts[1], 0);
-  if Length(Parts) > 2 then FRelease := StrToIntDef(Parts[2], 0);
-  if Length(Parts) > 3 then FBuild := StrToIntDef(Parts[3], 0);
-  
-  // Garantir valores mínimos
-  if FMajor < 1 then FMajor := 1;
-  if FMinor < 0 then FMinor := 0;
-  if FRelease < 0 then FRelease := 0;
-  if FBuild < 0 then FBuild := 0;
+ // Garantir valores mínimos
+ if FMajor < 1 then FMajor := 1;
+ if FMinor < 0 then FMinor := 0;
+ if FRelease < 0 then FRelease := 0;
+ if FBuild < 0 then FBuild := 0;
 end;
 
 end.
