@@ -1148,16 +1148,16 @@ begin
    FPrismLog:= TPrismLog.Create(FPrismOptions.LogFile, FPrismOptions.LogFileMode = lfmDaily);
 
   if not DirectoryExists(Options.RootDirectory) then
-  MkDir(Options.RootDirectory);
+  ForceDirectories(Options.RootDirectory);
 
   if not DirectoryExists(Options.RootDirectory + PrismBaseClass.Options.PathCSS) then
-  MkDir(Options.RootDirectory + PrismBaseClass.Options.PathCSS);
+  ForceDirectories(Options.RootDirectory + PrismBaseClass.Options.PathCSS);
 
   if not DirectoryExists(Options.RootDirectory + PrismBaseClass.Options.PathJS) then
-  MkDir(Options.RootDirectory + PrismBaseClass.Options.PathJS);
+  ForceDirectories(Options.RootDirectory + PrismBaseClass.Options.PathJS);
 
   if not DirectoryExists(Options.RootDirectory + PrismBaseClass.Options.PathFont) then
-  MkDir(Options.RootDirectory + PrismBaseClass.Options.PathFont);
+  ForceDirectories(Options.RootDirectory + PrismBaseClass.Options.PathFont);
 
   if not DirectoryExists(Options.RootDirectory + Options.PathTemp) then
    ForceDirectories(Options.RootDirectory + Options.PathTemp);
@@ -1172,7 +1172,7 @@ begin
    {$ENDIF}
   end;
   if not DirectoryExists(Options.RootDirectory + Options.PathTempSessions) then
-  MkDir(Options.RootDirectory + Options.PathTempSessions);
+  ForceDirectories(Options.RootDirectory + Options.PathTempSessions);
 
   //Expand Files Support
  {$IFDEF D2BRIDGE}

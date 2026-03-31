@@ -35,7 +35,7 @@ unit Prism.Server.HTML.Headers;
 interface
 
 uses
-  Classes, Generics.Collections, SysUtils, DateUtils, Rtti,
+  Classes, Generics.Collections, SysUtils, DateUtils, Rtti, StrUtils,
   Prism.Interfaces, Prism.Types, Prism.Session, Prism.Server.HTTP.Commom;
 
 
@@ -248,8 +248,8 @@ function TPrismServerHTMLHeaders.AddHeadsIncludes(var HTMLText: string; host: st
 var
  FPathJS, FPathCSS: string;
 begin
- FPathJS:= PrismBaseClass.Options.PathJS;
- FPathCSS:= PrismBaseClass.Options.PathCSS;
+ FPathJS  := ReplaceStr( PrismBaseClass.Options.PathJS, '\', '/' );
+ FPathCSS := ReplaceStr( PrismBaseClass.Options.PathCSS, '\', '/' );
 
  Result:= '';
 
@@ -374,8 +374,8 @@ function TPrismServerHTMLHeaders.AddVariables(Session: IPrismSession): string;
 var
  FPathJS, FPathCSS: string;
 begin
- FPathJS:= PrismBaseClass.Options.PathJS;
- FPathCSS:= PrismBaseClass.Options.PathCSS;
+ FPathJS  := ReplaceStr( PrismBaseClass.Options.PathJS, '\', '/' );
+ FPathCSS := ReplaceStr( PrismBaseClass.Options.PathCSS, '\', '/' );
 
  Result:= FCoreVariable;
 
@@ -569,8 +569,8 @@ var
  HTMLCodeString: TStringList;
  FPathJS, FPathCSS: string;
 begin
- FPathJS:= PrismBaseClass.Options.PathJS;
- FPathCSS:= PrismBaseClass.Options.PathCSS;
+ FPathJS  := ReplaceStr( PrismBaseClass.Options.PathJS, '\', '/' );
+ FPathCSS := ReplaceStr( PrismBaseClass.Options.PathCSS, '\', '/' );
 
  HTMLCodeString:= TStringList.Create;
 
