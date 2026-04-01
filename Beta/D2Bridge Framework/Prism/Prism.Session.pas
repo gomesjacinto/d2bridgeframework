@@ -1521,7 +1521,7 @@ var
  vParamTimeOut, vParamIdleTimeOut, vParamHeartBeatTime, vParamWaitIdleResponse: integer;
  vLastHeartBeat, vTimeOut, vIdleTimeOut : integer;
  vInTimeOut, vInIdleTimeOut: Boolean;
- vRenewIdle: boolean;
+ vRenewIdle, vRenewExpired: boolean;
 begin
  try
   if Closing or Destroying then
@@ -1534,7 +1534,7 @@ begin
    vParamHeartBeatTime:= PrismBaseClass.Options.HeartBeatTime div 1000;
    vParamTimeOut := PrismBaseClass.Options.SessionTimeOut;
    if PrismBaseClass.Options.SessionIdleTimeOut  > 0 then
-    vParamIdleTimeOut := PrismBaseClass.Options.SessionIdleTimeOut + vParamHeartBeatTime
+    vParamIdleTimeOut := PrismBaseClass.Options.SessionIdleTimeOut
    else
     vParamIdleTimeOut := 0;
   {$ENDREGION}
@@ -1577,6 +1577,21 @@ begin
    {$REGION 'Max TimeOut - Close Session'}
    if (vInTimeOut) then
    begin
+    vRenewExpired:= false;
+
+    if Assigned(PrismBaseClass.OnExpiredSession) then
+     PrismBaseClass.OnExpiredSession(self, vRenewExpired);
+
+    if Closing or Destroying then
+     Exit;
+
+    if vRenewExpired then
+    begin
+     FLastHeartBeat:= now;
+     EndDisconnect;
+     Exit;
+    end;
+
     try
      //FSessionTimer.Terminate;
      Close(false);
@@ -1614,18 +1629,39 @@ begin
   if (vParamIdleTimeOut > 0) and StabilizedConn then
   begin
    {$REGION 'Calc Idle TimeOut Values'}
-   if LastActivityInSeconds > vParamIdleTimeOut then
+    if LastActivityInSeconds >= vParamIdleTimeOut then
     vIdleTimeOut:= LastActivityInSeconds
    else
     vIdleTimeOut:= 0;
 
-   vInIdleTimeOut:= vIdleTimeOut > (vParamIdleTimeOut + vParamWaitIdleResponse);
+    vInIdleTimeOut:= vIdleTimeOut >= (vParamIdleTimeOut + vParamWaitIdleResponse);
+
+   if Idle and (vIdleTimeOut = 0) then
+    SetIdle(false);
    {$ENDREGION}
 
 
    {$REGION 'Max IDLE TimeOut - Close Session'}
    if (vInIdleTimeOut) then
    begin
+    if not Idle then
+     SetIdle(true);
+
+    vRenewExpired:= false;
+
+    if Assigned(PrismBaseClass.OnExpiredSession) then
+     PrismBaseClass.OnExpiredSession(self, vRenewExpired);
+
+    if Closing or Destroying then
+     Exit;
+
+    if vRenewExpired then
+    begin
+     SetIdle(false);
+     FLastActivity:= now;
+     Exit;
+    end;
+
     try
      //FSessionTimer.Terminate;
      Close(true);
@@ -1637,32 +1673,27 @@ begin
    {$ENDREGION}
 
 
-   {$REGION 'Exit if Primary Form is Renning'}
-   try
-    if (PrimaryForm <> nil) and
-       (PrimaryForm = TD2BridgeForm(TD2BridgeClass(D2BridgeBaseClassActive).FormAOwner)) then
-    begin
-     exit;
-    end;
-   except
-   end;
-   {$ENDREGION}
-
    {$REGION 'Begin Idle TimeOut Process'}
    if (not vInIdleTimeOut) and (not Idle) and (vIdleTimeOut > 0) then
    begin
+    SetIdle(true);
+
     vRenewIdle:= false;
 
-    if Assigned(PrismBaseClass.OnExpiredSession) then
-     PrismBaseClass.OnExpiredSession(self, vRenewIdle);
+    if Assigned(PrismBaseClass.OnIdleSession) then
+     PrismBaseClass.OnIdleSession(self, vRenewIdle);
+
+    if Closing or Destroying then
+     Exit;
 
     if vRenewIdle then
     begin
+     SetIdle(false);
      FLastActivity:= now;
      Exit;
     end else
     begin
-     TThread.CreateAnonymousThread(Exec_ShowMessageSessionIdle).Start;
+     ShowMessageSessionIdle;
     end;
 
     Exit;
