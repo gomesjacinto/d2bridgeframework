@@ -1,4 +1,4 @@
-{
+ï»¿{
  +--------------------------------------------------------------------------+
   D2Bridge Framework Content
 
@@ -364,8 +364,8 @@ begin
 
    FTimerObserver.Terminate;
   end;
-  //Este Sleep é necessário por que o Timer acima
-  //vai tentar chamar o OnTimer e o PrismForm não existe
+  //Este Sleep ï¿½ necessï¿½rio por que o Timer acima
+  //vai tentar chamar o OnTimer e o PrismForm nï¿½o existe
   //mais
   //sleep(1000);
   //FTimerObserver:= nil;
@@ -771,8 +771,9 @@ begin
   end;
  end;
 
-end;
+ UpdateControls;
 
+end;
 procedure TPrismForm.OnBeforePageLoad;
 begin
  FTimerObserver.Pause;
@@ -1065,14 +1066,14 @@ var
   I: Integer;
   vSimpleCallBack: TSimpleCallBack;
 begin
-  // Crie uma expressão regular para encontrar todas as ocorrências de {{Texto}}
+  // Crie uma expressï¿½o regular para encontrar todas as ocorrï¿½ncias de {{Texto}}
 {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}
   Regex := TRegEx.Create('{{(?!_).*?}}', [roIgnoreCase, roMultiLine]);
 {$ELSE}
   Regex := TRegExpr.Create('\{\{.*?\}\}');
 {$ENDIF}
 
-  // Inicialize as variáveis
+  // Inicialize as variï¿½veis
   StartPos := 1;
 
   // Comece a percorrer o HTMLText
@@ -1080,14 +1081,14 @@ begin
   begin
    try
 {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}
-    // Encontre a próxima correspondência
+    // Encontre a prï¿½xima correspondï¿½ncia
     Match := Regex.Match(HTMLText, StartPos);
 
-    // Se não houver correspondência, saia do loop
+    // Se nï¿½o houver correspondï¿½ncia, saia do loop
     if not Match.Success then
       Break;
 {$ELSE}
-    // Encontre a próxima correspondência, Se não houver correspondência, saia do loop
+    // Encontre a prï¿½xima correspondï¿½ncia, Se nï¿½o houver correspondï¿½ncia, saia do loop
     if not Regex.Exec(HTMLText.Substring(StartPos)) then
       Break;
 
@@ -1106,7 +1107,7 @@ begin
     vIsSimpleCallBack:= false;
     vIsStaticCallBack:= false;
 
-    // Obtenha a correspondência e o texto entre {{ e }}
+    // Obtenha a correspondï¿½ncia e o texto entre {{ e }}
     TagString := {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}Match.Value{$ELSE}Regex.Match[0]{$ENDIF};
     TagStringJust:= Copy(TagString, 3, length(TagString)-4);
     ReplaceTag := {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}Match.Value{$ELSE}Regex.Match[0]{$ENDIF};//Match.Groups[1].Value;
@@ -1184,16 +1185,16 @@ begin
 
 
 {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}
-    // Substitua a correspondência pelo resultado do evento
+    // Substitua a correspondï¿½ncia pelo resultado do evento
     HTMLText := HTMLText.Remove(Match.Index-1, Match.Length).Insert(Match.Index-1, ReplaceTag);
 
-    // Atualize a posição de início
+    // Atualize a posiï¿½ï¿½o de inï¿½cio
     StartPos := Match.Index -1 + Length(ReplaceTag);
 {$ELSE}
-    // Substitua a correspondência pelo resultado do evento
+    // Substitua a correspondï¿½ncia pelo resultado do evento
     HTMLText := HTMLText.Remove(Regex.MatchPos[0]{$IFDEF FPC} + StartPos - 1{$ENDIF}, Regex.MatchLen[0]).Insert(Regex.MatchPos[0]{$IFDEF FPC} + StartPos - 1{$ENDIF}, ReplaceTag);
 
-    // Atualize a posição de início
+    // Atualize a posiï¿½ï¿½o de inï¿½cio
     StartPos := Regex.MatchPos[0] + Length(ReplaceTag){$IFDEF FPC} + StartPos{$ENDIF};
 {$ENDIF}
    except
@@ -1227,14 +1228,14 @@ var
   StartPos, EndPos: Integer;
   AContext, TagString, TagStringJust, ATerm, ATranslated: string;
 begin
- // Crie uma expressão regular para encontrar todas as ocorrências de {{_Texto_}}
+ // Crie uma expressï¿½o regular para encontrar todas as ocorrï¿½ncias de {{_Texto_}}
 {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}
   Regex := TRegEx.Create('{{_.*?(\.\w+)?_}}', [roIgnoreCase, roMultiLine]);
 {$ELSE}
   Regex := TRegExpr.Create('\{\{_.*?(\.\w+)?_\}\}');
 {$ENDIF}
 
- // Inicialize as variáveis
+ // Inicialize as variï¿½veis
  StartPos := 1;
  EndPos := Length(HTMLText);
 
@@ -1242,22 +1243,22 @@ begin
  while StartPos <= EndPos do
  begin
 {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}
-  // Encontre a próxima correspondência
+  // Encontre a prï¿½xima correspondï¿½ncia
   Match := Regex.Match(HTMLText, StartPos);
   ATranslated:= '';
 
-  // Se não houver correspondência, saia do loop
+  // Se nï¿½o houver correspondï¿½ncia, saia do loop
   if not Match.Success then
    Break;
 {$ELSE}
-  // Encontre a próxima correspondência, Se não houver correspondência, saia do loop
+  // Encontre a prï¿½xima correspondï¿½ncia, Se nï¿½o houver correspondï¿½ncia, saia do loop
   ATranslated:= '';
 
   if not Regex.Exec(HTMLText.Substring(StartPos)) then
    Break;
 {$ENDIF}
 
-  // Obtenha a correspondência e o texto entre {{ e }}
+  // Obtenha a correspondï¿½ncia e o texto entre {{ e }}
   TagString := {$IFDEF HAS_UNIT_REGULAREXPRESSIONSAPI}Match.Value{$ELSE}Regex.Match[0]{$ENDIF};
   TagStringJust:= Copy(TagString, 4, length(TagString)-6);
 
@@ -1280,7 +1281,7 @@ begin
   else
    ATranslated := Match.Value;
 
-  // Atualize a posição de início
+  // Atualize a posiï¿½ï¿½o de inï¿½cio
   StartPos := Match.Index -1 + Length(ATranslated);
 {$ELSE}
   if ATranslated <> '' then
@@ -1288,7 +1289,7 @@ begin
   else
    ATranslated := Regex.Match[0];
 
-  // Atualize a posição de início
+  // Atualize a posiï¿½ï¿½o de inï¿½cio
   StartPos := Regex.MatchPos[0] + Length(ATranslated){$IFDEF FPC} + StartPos{$ENDIF};
 {$ENDIF}
  end;

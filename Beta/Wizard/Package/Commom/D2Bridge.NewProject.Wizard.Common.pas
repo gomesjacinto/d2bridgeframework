@@ -1,4 +1,4 @@
-{
+﻿{
  +--------------------------------------------------------------------------+
   D2Bridge Framework Content
 
@@ -128,6 +128,8 @@ var
   sSourceWebFMXDPROJFile, sSourceFMXDPROJFile: string;
   sSourceWebFMXDPRFile, sSourceFMXDPRFile: string;
   sSourceWebFMXRESFile, sSourceFMXRESFile: string;
+  ServersFile: string;
+  vServerFilesIdx: Integer;
 {$ENDIF}
 {$IFDEF FPC}
   sSourceFixD2BridgeLazCompile, sSourceFixD2BridgeLazBuild: string;
@@ -918,8 +920,10 @@ begin
 
      {$REGION 'Unit Server Properties'}
      {$IFDEF DELPHI}
-      for var ServersFile in [sPathUnitServer,sPathUnitServiceServer] do
+      for vServerFilesIdx := 0 to 1 do
       begin
+        if vServerFilesIdx = 0 then ServersFile := sPathUnitServer
+                               else ServersFile := sPathUnitServiceServer;
         sFile:= TStringStream.Create('', TEncoding.UTF8);
         sFile.LoadFromFile(GetRealFilePath(ServersFile));
         sFileContent:= sFile.DataString;

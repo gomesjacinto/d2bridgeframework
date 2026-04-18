@@ -1,4 +1,4 @@
-{
+ï»¿{
  +--------------------------------------------------------------------------+
   D2Bridge Framework Content
 
@@ -510,6 +510,8 @@ type
    procedure ShowMessage(const Msg: string; useToast: boolean; TimerInterval: integer = 4000; DlgType: TMsgDlgType = TMsgDlgType.mtInformation; ToastPosition: TToastPosition = ToastTopRight); overload;
    procedure ShowMessage(const Msg: string; useToast: boolean; ASyncMode : Boolean; TimerInterval: integer = 4000; DlgType: TMsgDlgType = TMsgDlgType.mtInformation; ToastPosition: TToastPosition = ToastTopRight); overload;
    procedure ShowMessage(const Msg: string); overload;
+  procedure LogHandledException(Sender: TObject; E: Exception; const EventName: string); virtual;
+  procedure ShowLoggedException(Sender: TObject; E: Exception; const EventName, UserMessage: string; DlgType: TMsgDlgType = TMsgDlgType.mtError); virtual;
    function MessageDlg(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; ACallBackName: string): Integer; overload;
    function MessageDlg(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer; overload;
    function PrismSession: TPrismSession; deprecated 'Use just Session';
@@ -597,7 +599,7 @@ implementation
 uses
   D2Bridge.Item.VCLObj, D2Bridge.Messages, Prism.CallBack, Prism.Util, Prism.Forms, D2Bridge.VCLObj.Override,
   D2Bridge.Util, D2Bridge.BaseClass, D2Bridge.Manager, D2Bridge.Prism.Form, D2Bridge.Item.HTML.Popup,
-  Prism.Session.Thread.Proc {$IFDEF D2BRIDGE}, Prism.BaseClass{$ENDIF};
+  Prism.Session.Thread.Proc, D2Bridge.ServerControllerBase {$IFDEF D2BRIDGE}, Prism.BaseClass{$ENDIF};
 
 {$IFDEF D2BRIDGE}
 type
@@ -691,7 +693,7 @@ var
  vComponent: TComponent;
 begin
  {$IFDEF D2BRIDGE}
-  // Cancela eventos pendentes para evitar acessos inválidos
+  // Cancela eventos pendentes para evitar acessos invï¿½lidos
   //Perform(WM_CLOSE, 0, 0);
   //Application.ProcessMessages;
 
@@ -1267,7 +1269,7 @@ procedure TD2BridgeForm.KanbanMoveCard(const AKanbanCard: IPrismCardModel; const
 begin
 end;
 
-// ****Precisa implementar também CreateMessageDialog*****
+// ****Precisa implementar tambï¿½m CreateMessageDialog*****
 function TD2BridgeForm.MessageDlg(const Msg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; ACallBackName: string): Integer;
 {$IFDEF D2BRIDGE}
 var
@@ -1315,16 +1317,16 @@ begin
 
 
  // Iterar pelos elementos do conjunto
- {$REGION 'Carrega os Botões'}
+ {$REGION 'Carrega os Botï¿½es'}
   //Colors https://www.colorhexmap.com/
   for _Button := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
   begin
-    // Verificar se o botão está presente no conjunto
+    // Verificar se o botï¿½o estï¿½ presente no conjunto
     if _Button in Buttons then
     begin
       SetLength(ButtonArray,Length(ButtonArray)+1);
 
-      // Fazer algo com o botão
+      // Fazer algo com o botï¿½o
       case _Button of
         TMsgDlgBtn.mbYes:
          with ButtonArray[Length(ButtonArray)-1] do
@@ -1572,7 +1574,7 @@ begin
  end;
 
 
- //Somente aborta se tiver mais de uma confirmação
+ //Somente aborta se tiver mais de uma confirmaï¿½ï¿½o
 // if Length(ButtonArray) > 1 then
 // Abort;
 
@@ -2158,6 +2160,49 @@ begin
  Result:= D2Bridge.Session;
  {$ELSE}
  result:= D2BridgeInstance.Session as TPrismSession;
+ {$ENDIF}
+end;
+
+procedure TD2BridgeForm.LogHandledException(Sender: TObject; E: Exception; const EventName: string);
+var
+ vComponentName: string;
+ vSessionIdentity: string;
+ vSession: TPrismSession;
+begin
+ if not Assigned(E) then
+  Exit;
+
+ vComponentName:= '';
+ vSessionIdentity:= '';
+
+ if Assigned(Sender) then
+ begin
+  if Sender is TComponent then
+   vComponentName:= TComponent(Sender).Name
+  else
+   vComponentName:= Sender.ClassName;
+ end;
+
+ vSession:= nil;
+ try
+  vSession:= Session;
+ except
+ end;
+
+ if Assigned(vSession) then
+  vSessionIdentity:= vSession.InfoConnection.Identity;
+
+ if Assigned(D2BridgeServerControllerBase) and Assigned(D2BridgeServerControllerBase.Prism) then
+  D2BridgeServerControllerBase.Prism.Log(vSessionIdentity, Name, vComponentName, EventName, E.Message);
+end;
+
+procedure TD2BridgeForm.ShowLoggedException(Sender: TObject; E: Exception; const EventName, UserMessage: string; DlgType: TMsgDlgType);
+begin
+ LogHandledException(Sender, E, EventName);
+ {$IFDEF D2BRIDGE}
+ ShowMessage(UserMessage + E.Message, true, true, 8000, DlgType);
+ {$ELSE}
+ MessageDlg(UserMessage + E.Message, DlgType, [mbOk], 0);
  {$ENDIF}
 end;
 
@@ -2791,7 +2836,7 @@ begin
   PrismSession.DoException(self as TObject, E, 'OnCreate');
  end;
 
- //Aqui é o Setup
+ //Aqui ï¿½ o Setup
  try
   SetupD2Bridge;
  except
@@ -3138,7 +3183,7 @@ begin
 // end else
 // begin
 //  Result:= nil;
-//  raise Exception.Create('Contexto não encontrado - ERROR 1966-1');
+//  raise Exception.Create('Contexto nï¿½o encontrado - ERROR 1966-1');
 // end;
 end;
 
@@ -3869,7 +3914,7 @@ begin
     if AComponent is TD2BridgeForm then
     begin
       Result := TForm(AComponent);
-      Exit; // Encontrou o formulário, sai da função
+      Exit; // Encontrou o formulï¿½rio, sai da funï¿½ï¿½o
     end;
     AComponent := AComponent.Owner; // Vai subindo na cadeia de owners
   end;

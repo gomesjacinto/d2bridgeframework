@@ -86,6 +86,7 @@ type
    procedure ReloadGrid;
    function ColModelToList: TDictionary<string,string>;
    function ColumnsToColModel: string;
+  function ClientHydrationJS(const AJSONData: string; const ADelayMS: Integer): string;
    procedure OnCellButtonClick(EventParams: TStrings);
    function SelectedRowsIDStr: string;
    //Dataware Event
@@ -378,7 +379,7 @@ begin
 
      JSONItemColumn.AddPair('name', Columns.Items[I].ColName);
      JSONItemColumn.AddPair('index', TJSONIntegerNumber.Create(Columns.Items[I].ColumnIndex));
-     JSONItemColumn.AddPair('label', '<div class="d2bridgedbgridtitle" style="text-align: ' + vColAlign + ';">'+Columns.Items[I].Title+'</div>');
+    JSONItemColumn.AddPair('label', BuildColumnLabelHTML(Columns.Items[I], vColAlign));
      JSONItemColumn.AddPair('width', TJSONIntegerNumber.Create(Round(Columns.Items[I].Width * vFatorWidth)));
      JSONItemColumn.AddPair('align', vColAlign);
 
@@ -663,6 +664,11 @@ end;
 function TPrismDBGrid.GetDataSource: TDataSource;
 begin
  result:= FPrismDataLink.DataSource;
+end;
+
+function TPrismDBGrid.ClientHydrationJS(const AJSONData: string; const ADelayMS: Integer): string;
+begin
+ Result:= ClientGridHydrationJS(AJSONData, ADelayMS);
 end;
 
 function TPrismDBGrid.GetDataToJSON: String;
@@ -974,6 +980,7 @@ begin
 
  HTMLText.Add('<div class="col">');
  HTMLText.Add('<table '+HTMLCore+'>'+'</table>');
+ HTMLText.Add(BuildGridStyleBlock);
  if ShowPager then
  begin
   HTMLText.Add('<div id="PAGER'+ AnsiUpperCase(NamePrefix) +'"></div>');
@@ -1537,7 +1544,7 @@ begin
   Add('        }');
   Add('    });');
 
-
+ HTMLText.Add(ClientHydrationJS(FJSONData, 150));
   Add('});');
  end;
 
@@ -1779,6 +1786,8 @@ begin
   if NewVisible then
   begin
    ScriptJS.Add('$("#gbox_' +AnsiUpperCase(NamePrefix)+'").removeClass("invisible");');
+     SetDataToJSON;
+     ScriptJS.Add(ClientHydrationJS(FJSONData, 75));
   end else
   begin
    ScriptJS.Add('$("#gbox_' +AnsiUpperCase(NamePrefix)+'").addClass("invisible");');
@@ -1812,10 +1821,7 @@ begin
     '"{ editable: '+ BoolToStr(FStoredEditable, True).ToLower +
      ', celledit: ' + BoolToStr(FStoredEditable, True).ToLower + '}");');
 
-  ScriptJS.Add('$("[id]").filter(function() {return this.id.toUpperCase() === "'+AnsiUpperCase(NamePrefix)+'";})');
-  ScriptJS.Add('.jqGrid("clearGridData")');
-  ScriptJS.Add('.jqGrid("setGridParam", { data: ' + FJSONData + ' })');
-  ScriptJS.Add('.trigger("reloadGrid", { page: 1 });');
+  ScriptJS.Add(ClientGridReloadDataJS(FJSONData));
 
   //ScriptJS.Add('$("[id]").filter(function() {return this.id.toUpperCase() === "'+AnsiUpperCase(NamePrefix)+'";}).trigger("reloadGrid", { fromServer: false, page: 1 } );');
  end;
@@ -1845,16 +1851,8 @@ begin
     ScriptJS.Add('SelectedCol'+AnsiUpperCase(NamePrefix)+' = -1;');
     ScriptJS.Add('SelectedRowIDs'+AnsiUpperCase(NamePrefix)+' = [];');
 
-    vColumnsDict:= ColModelToList;
-    for I := 0 to Pred(vColumnsDict.Count) do
-     ScriptJS.Add('$("[id]").filter(function() {return this.id.toUpperCase() === "'+AnsiUpperCase(NamePrefix)+'";}).jqGrid("setColProp", "'+ vColumnsDict.Keys.ToArray[I]+'", ' + vColumnsDict.Values.ToArray[I] + ');');
-    vColumnsDict.Free;
-
     //ScriptJS.Add('$("[id]").filter(function() {return this.id.toUpperCase() === "'+AnsiUpperCase(NamePrefix)+'";}).trigger("reloadGrid", { fromServer: true, page: 1 } );');
-    ScriptJS.Add('$("[id]").filter(function() {return this.id.toUpperCase() === "'+AnsiUpperCase(NamePrefix)+'";})');
-    ScriptJS.Add('.jqGrid("clearGridData")');
-    ScriptJS.Add('.jqGrid("setGridParam", { data: ' + FJSONData + ' })');
-    ScriptJS.Add('.trigger("reloadGrid", { page: 1 });');
+    ScriptJS.Add(ClientGridReloadDataJS(FJSONData));
    end else
    if (FRefreshRow.Update) then
    begin
@@ -1872,10 +1870,7 @@ begin
    if (FRefreshData) or (AForceUpdate) then
    begin
     //ScriptJS.Add('$("[id]").filter(function() {return this.id.toUpperCase() === "'+AnsiUpperCase(NamePrefix)+'";}).trigger("reloadGrid", { page: 1 } );');
-    ScriptJS.Add('$("[id]").filter(function() {return this.id.toUpperCase() === "'+AnsiUpperCase(NamePrefix)+'";})');
-    ScriptJS.Add('.jqGrid("clearGridData")');
-    ScriptJS.Add('.jqGrid("setGridParam", { data: ' + FJSONData + ' })');
-    ScriptJS.Add('.trigger("reloadGrid", { page: 1 });');
+    ScriptJS.Add(ClientGridReloadDataJS(FJSONData));
    end;
 
    FRefreshData:= false;

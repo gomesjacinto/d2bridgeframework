@@ -36,7 +36,7 @@ interface
 
 {$IFNDEF FMX}
 uses
-  SysUtils, Generics.Collections,
+  SysUtils, Graphics, Generics.Collections,
   D2Bridge.Interfaces, D2Bridge.FrameworkItem.DataWare, D2Bridge.FrameworkItem.GridColumns,
   D2Bridge.Prism.Item, D2Bridge.Prism;
 
@@ -50,14 +50,38 @@ type
    FColumns: TD2BridgeFrameworkItemGridColumns;
    FDataware: TD2BridgeDatawareOnlyDataSource;
    FMultiSelect: Boolean;
+  FImportStylesComponents: Boolean;
+  FTitleFontSize: Integer;
+  FTitleFontColor: TColor;
+  FTitleFontStyles: TFontStyles;
+  FTitleBackgroundColor: TColor;
+  FZebraGrid: Boolean;
+  FZebraOddColor: TColor;
+  FZebraPairColor: TColor;
    function GetMultiSelect: Boolean;
    Procedure SetMultiSelect(AMultiSelect: Boolean);
+  function GetImportStylesComponents: Boolean;
+  procedure SetImportStylesComponents(Value: Boolean);
    procedure SetOnGetSelectedRow(AOnGetSelectedRow: TOnGetValue);
    function GetOnGetSelectedRow: TOnGetValue;
    procedure SetOnSetSelectedRow(AOnSetSelectedRow: TOnSetValue);
    function GetOnSetSelectedRow: TOnSetValue;
    function GetProcEditable: TOnGetValue;
    procedure SetProcEditable(const Value: TOnGetValue);
+  function GetTitleFontSize: Integer;
+  procedure SetTitleFontSize(Value: Integer);
+  function GetTitleFontColor: TColor;
+  procedure SetTitleFontColor(Value: TColor);
+  function GetTitleFontStyles: TFontStyles;
+  procedure SetTitleFontStyles(Value: TFontStyles);
+  function GetTitleBackgroundColor: TColor;
+  procedure SetTitleBackgroundColor(Value: TColor);
+  function GetZebraGrid: Boolean;
+  procedure SetZebraGrid(Value: Boolean);
+  function GetZebraOddColor: TColor;
+  procedure SetZebraOddColor(Value: TColor);
+  function GetZebraPairColor: TColor;
+  procedure SetZebraPairColor(Value: TColor);
   public
    constructor Create(AD2BridgePrismFramework: TD2BridgePrismFramework); override;
    destructor Destroy; override;
@@ -72,9 +96,17 @@ type
    function Dataware : ID2BridgeDatawareOnlyDataSource;
 
    property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect;
+  property ImportStylesComponents: Boolean read GetImportStylesComponents write SetImportStylesComponents;
    property OnGetSelectedRow: TOnGetValue read GetOnGetSelectedRow write SetOnGetSelectedRow;
    property OnSetSelectedRow: TOnSetValue read GetOnSetSelectedRow write SetOnSetSelectedRow;
    property GetEditable: TOnGetValue read GetProcEditable write SetProcEditable;
+   property TitleFontSize: Integer read GetTitleFontSize write SetTitleFontSize;
+   property TitleFontColor: TColor read GetTitleFontColor write SetTitleFontColor;
+   property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
+   property TitleBackgroundColor: TColor read GetTitleBackgroundColor write SetTitleBackgroundColor;
+   property ZebraGrid: Boolean read GetZebraGrid write SetZebraGrid;
+   property ZebraOddColor: TColor read GetZebraOddColor write SetZebraOddColor;
+   property ZebraPairColor: TColor read GetZebraPairColor write SetZebraPairColor;
  end;
 
 
@@ -95,6 +127,14 @@ begin
  FProcGetSelectedRow:= nil;
  FProcGetEditable:= nil;
  FMultiSelect:= False;
+ FImportStylesComponents:= false;
+ FTitleFontSize:= 0;
+ FTitleFontColor:= clNone;
+ FTitleFontStyles:= [];
+ FTitleBackgroundColor:= clNone;
+ FZebraGrid:= false;
+ FZebraOddColor:= clWhite;
+ FZebraPairColor:= $00F3F3F3;
  Columns.Clear;
  Dataware.Clear;
 end;
@@ -111,6 +151,11 @@ begin
  FColumns:= TD2BridgeFrameworkItemGridColumns.Create;
  FDataware := TD2BridgeDatawareOnlyDataSource.Create;
  FMultiSelect:= False;
+ FImportStylesComponents:= false;
+ FTitleFontColor:= clNone;
+ FTitleBackgroundColor:= clNone;
+ FZebraOddColor:= clWhite;
+ FZebraPairColor:= $00F3F3F3;
 end;
 
 function PrismDBGrid.Dataware: ID2BridgeDatawareOnlyDataSource;
@@ -138,6 +183,11 @@ begin
  Result:= FMultiSelect;
 end;
 
+function PrismDBGrid.GetImportStylesComponents: Boolean;
+begin
+ Result:= FImportStylesComponents;
+end;
+
 function PrismDBGrid.GetOnGetSelectedRow: TOnGetValue;
 begin
  Result:= FProcGetSelectedRow;
@@ -151,6 +201,41 @@ end;
 function PrismDBGrid.GetProcEditable: TOnGetValue;
 begin
  Result:= FProcGetEditable;
+end;
+
+function PrismDBGrid.GetTitleBackgroundColor: TColor;
+begin
+ Result:= FTitleBackgroundColor;
+end;
+
+function PrismDBGrid.GetTitleFontColor: TColor;
+begin
+ Result:= FTitleFontColor;
+end;
+
+function PrismDBGrid.GetTitleFontSize: Integer;
+begin
+ Result:= FTitleFontSize;
+end;
+
+function PrismDBGrid.GetTitleFontStyles: TFontStyles;
+begin
+ Result:= FTitleFontStyles;
+end;
+
+function PrismDBGrid.GetZebraGrid: Boolean;
+begin
+ Result:= FZebraGrid;
+end;
+
+function PrismDBGrid.GetZebraOddColor: TColor;
+begin
+ Result:= FZebraOddColor;
+end;
+
+function PrismDBGrid.GetZebraPairColor: TColor;
+begin
+ Result:= FZebraPairColor;
 end;
 
 procedure PrismDBGrid.ProcessEventClass(VCLObj, NewObj: TObject);
@@ -226,6 +311,10 @@ begin
   Editable:= Columns.Items[I].Editable;
   DataFieldType:= Columns.Items[I].DataFieldType;
   SelectItems := Columns.Items[I].SelectItems;
+  FontColor:= Columns.Items[I].FontColor;
+  FontStyles:= Columns.Items[I].FontStyles;
+  TitleFontColor:= Columns.Items[I].TitleFontColor;
+  TitleFontStyles:= Columns.Items[I].TitleFontStyles;
   case Columns.Items[I].Alignment of
     D2BridgeAlignColumnsLeft: Alignment:= PrismAlignLeft;
     D2BridgeAlignColumnsRight: Alignment:= PrismAlignRight;
@@ -243,11 +332,24 @@ begin
 
  if Assigned(FProcGetEditable) then
  TPrismDBGrid(NewObj).ProcGetEditable:= FProcGetEditable;
+
+ TPrismDBGrid(NewObj).TitleFontSize:= FTitleFontSize;
+ TPrismDBGrid(NewObj).TitleFontColor:= FTitleFontColor;
+ TPrismDBGrid(NewObj).TitleFontStyles:= FTitleFontStyles;
+ TPrismDBGrid(NewObj).TitleBackgroundColor:= FTitleBackgroundColor;
+ TPrismDBGrid(NewObj).ZebraGrid:= FZebraGrid;
+ TPrismDBGrid(NewObj).ZebraOddColor:= FZebraOddColor;
+ TPrismDBGrid(NewObj).ZebraPairColor:= FZebraPairColor;
 end;
 
 procedure PrismDBGrid.SetMultiSelect(AMultiSelect: Boolean);
 begin
  FMultiSelect:= AMultiSelect;
+end;
+
+procedure PrismDBGrid.SetImportStylesComponents(Value: Boolean);
+begin
+ FImportStylesComponents:= Value;
 end;
 
 procedure PrismDBGrid.SetOnGetSelectedRow(AOnGetSelectedRow: TOnGetValue);
@@ -263,6 +365,41 @@ end;
 procedure PrismDBGrid.SetProcEditable(const Value: TOnGetValue);
 begin
  FProcGetEditable:= Value;
+end;
+
+procedure PrismDBGrid.SetTitleBackgroundColor(Value: TColor);
+begin
+ FTitleBackgroundColor:= Value;
+end;
+
+procedure PrismDBGrid.SetTitleFontColor(Value: TColor);
+begin
+ FTitleFontColor:= Value;
+end;
+
+procedure PrismDBGrid.SetTitleFontSize(Value: Integer);
+begin
+ FTitleFontSize:= Value;
+end;
+
+procedure PrismDBGrid.SetTitleFontStyles(Value: TFontStyles);
+begin
+ FTitleFontStyles:= Value;
+end;
+
+procedure PrismDBGrid.SetZebraGrid(Value: Boolean);
+begin
+ FZebraGrid:= Value;
+end;
+
+procedure PrismDBGrid.SetZebraOddColor(Value: TColor);
+begin
+ FZebraOddColor:= Value;
+end;
+
+procedure PrismDBGrid.SetZebraPairColor(Value: TColor);
+begin
+ FZebraPairColor:= Value;
 end;
 {$ELSE}
 implementation

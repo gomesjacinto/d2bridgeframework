@@ -36,6 +36,15 @@ interface
 
 
 uses
+  {$IFDEF FMX}
+   FMX.Graphics, FMX.Types
+  {$ELSE}
+   Graphics
+  {$ENDIF}
+  {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+    , System.UITypes
+  {$ENDIF}
+  ,
   Classes, Generics.Collections, SysUtils, D2Bridge.JSON,
   Prism.Interfaces, Prism.Types;
 
@@ -63,6 +72,12 @@ type
    FButtons: IPrismGridColumnButtons;
    FHTML: String;
    FColName: String;
+  FFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  FFontStyles: TFontStyles;
+  FBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  FTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  FTitleFontStyles: TFontStyles;
+  FTitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
    function GetDataField: string;
    Procedure SetDataField(AFieldName: String);
    function GetTitle: string;
@@ -87,6 +102,18 @@ type
    procedure SetCSS(const Value: String);
    function GetHTML: String;
    procedure SetHTML(const Value: String);
+  function GetFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetFontStyles: TFontStyles;
+  procedure SetFontStyles(Value: TFontStyles);
+  function GetBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetBackgroundColor(AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleFontColor(AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontStyles: TFontStyles;
+  procedure SetTitleFontStyles(AValue: TFontStyles);
+  function GetTitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleBackgroundColor(AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
   public
    constructor Create(APrismGridColumns: TPrismGridColumns);
    destructor Destroy; override;
@@ -109,6 +136,12 @@ type
    property Alignment: TPrismAlignment read GetAlignment write SetAlignment;
    property SelectItems: TJSONObject read GetSelectItems write SetSelectItems;
    property Editable: Boolean read GetEditable write SetEditable;
+   property FontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetFontColor write SetFontColor;
+   property FontStyles: TFontStyles read GetFontStyles write SetFontStyles;
+   property BackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetBackgroundColor write SetBackgroundColor;
+   property TitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleFontColor write SetTitleFontColor;
+   property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
+   property TitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleBackgroundColor write SetTitleBackgroundColor;
  end;
 
 
@@ -202,6 +235,12 @@ begin
  FVisible:= true;
  FTitle:= 'Column';
  FEditable:= false;
+  FFontColor:= {$IFNDEF FMX}clNone{$ELSE}TAlphaColors.Null{$ENDIF};
+  FFontStyles:= [];
+  FBackgroundColor:= {$IFNDEF FMX}clNone{$ELSE}TAlphaColors.Null{$ENDIF};
+  FTitleFontColor:= {$IFNDEF FMX}clNone{$ELSE}TAlphaColors.Null{$ENDIF};
+  FTitleFontStyles:= [];
+  FTitleBackgroundColor:= {$IFNDEF FMX}clNone{$ELSE}TAlphaColors.Null{$ENDIF};
 
  RefreshColName;
 end;
@@ -234,6 +273,11 @@ begin
  Result:= FCSS;
 end;
 
+function TPrismGridColumn.GetBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+begin
+ Result:= FBackgroundColor;
+end;
+
 function TPrismGridColumn.GetDataField: string;
 begin
  Result:= FDataField;
@@ -254,6 +298,16 @@ begin
  Result:= FEditable;
 end;
 
+function TPrismGridColumn.GetFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+begin
+ Result:= FFontColor;
+end;
+
+function TPrismGridColumn.GetFontStyles: TFontStyles;
+begin
+ Result:= FFontStyles;
+end;
+
 function TPrismGridColumn.GetHTML: String;
 begin
  Result:= FHTML;
@@ -262,6 +316,21 @@ end;
 function TPrismGridColumn.GetSelectItems: TJSONObject;
 begin
  Result:= FSelectItems;
+end;
+
+function TPrismGridColumn.GetTitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+begin
+ Result:= FTitleBackgroundColor;
+end;
+
+function TPrismGridColumn.GetTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+begin
+ Result:= FTitleFontColor;
+end;
+
+function TPrismGridColumn.GetTitleFontStyles: TFontStyles;
+begin
+ Result:= FTitleFontStyles;
 end;
 
 function TPrismGridColumn.GetTitle: string;
@@ -351,6 +420,12 @@ end;
 procedure TPrismGridColumn.SetAlignment(AAlignment: TPrismAlignment);
 begin
  FAlignment:= AAlignment;
+end;
+
+procedure TPrismGridColumn.SetBackgroundColor(
+  AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+begin
+ FBackgroundColor:= AValue;
 end;
 
 procedure TPrismGridColumn.SetColumnIndex(Value: Integer);
@@ -452,6 +527,17 @@ begin
  FEditable:= Value;
 end;
 
+procedure TPrismGridColumn.SetFontColor(
+  Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+begin
+ FFontColor:= Value;
+end;
+
+procedure TPrismGridColumn.SetFontStyles(Value: TFontStyles);
+begin
+ FFontStyles:= Value;
+end;
+
 procedure TPrismGridColumn.SetHTML(const Value: String);
 begin
  FHTML:= Value;
@@ -461,6 +547,23 @@ end;
 procedure TPrismGridColumn.SetSelectItems(AItems: TJSONObject);
 begin
  FSelectItems:= AItems;
+end;
+
+procedure TPrismGridColumn.SetTitleBackgroundColor(
+  AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+begin
+ FTitleBackgroundColor:= AValue;
+end;
+
+procedure TPrismGridColumn.SetTitleFontColor(
+  AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+begin
+ FTitleFontColor:= AValue;
+end;
+
+procedure TPrismGridColumn.SetTitleFontStyles(AValue: TFontStyles);
+begin
+ FTitleFontStyles:= AValue;
 end;
 
 procedure TPrismGridColumn.SetTitle(ATitle: String);

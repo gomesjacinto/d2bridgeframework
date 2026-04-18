@@ -161,7 +161,7 @@ begin
  FOracle:= nil;
  vOracle.Free;
 
- vCustom:= FOracle as TD2BridgeAPPConfigDatabaseParam;
+ vCustom:= FCustom as TD2BridgeAPPConfigDatabaseParam;
  FCustom:= nil;
  vCustom.Free;
 

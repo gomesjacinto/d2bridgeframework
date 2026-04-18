@@ -636,6 +636,14 @@ end;
    Procedure SetAlignment(AAlignment: TD2BridgeColumnsAlignment);
    function GetDataFieldType: TPrismFieldType;
    procedure SetDataFieldType(const Value: TPrismFieldType);
+  function GetFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetFontStyles: TFontStyles;
+  procedure SetFontStyles(Value: TFontStyles);
+  function GetTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontStyles: TFontStyles;
+  procedure SetTitleFontStyles(Value: TFontStyles);
 
    function SelectItems: TJSONObject;
 
@@ -646,6 +654,10 @@ end;
    property Visible: Boolean read GetVisible write SetVisible;
    property Width: Integer read GetWidth write SetWidth;
    property Alignment: TD2BridgeColumnsAlignment read GetAlignment write SetAlignment;
+  property FontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetFontColor write SetFontColor;
+  property FontStyles: TFontStyles read GetFontStyles write SetFontStyles;
+  property TitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleFontColor write SetTitleFontColor;
+  property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
 end;
 
 
@@ -663,20 +675,44 @@ end;
   ['{86CFCFC3-424E-4EF3-A2B2-E41BE6EAA692}']
   function GetMultiSelect: Boolean;
   Procedure SetMultiSelect(AMultiSelect: Boolean);
+  function GetImportStylesComponents: Boolean;
+  procedure SetImportStylesComponents(Value: Boolean);
   procedure SetOnGetSelectedRow(AOnGetSelectedRow: TOnGetValue);
   function GetOnGetSelectedRow: TOnGetValue;
   procedure SetOnSetSelectedRow(AOnSetSelectedRow: TOnSetValue);
   function GetOnSetSelectedRow: TOnSetValue;
   function GetProcEditable: TOnGetValue;
   procedure SetProcEditable(const Value: TOnGetValue);
+  function GetTitleFontSize: Integer;
+  procedure SetTitleFontSize(Value: Integer);
+  function GetTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontStyles: TFontStyles;
+  procedure SetTitleFontStyles(Value: TFontStyles);
+  function GetTitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleBackgroundColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetZebraGrid: Boolean;
+  procedure SetZebraGrid(Value: Boolean);
+  function GetZebraOddColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetZebraOddColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetZebraPairColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetZebraPairColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
 
   function Dataware: ID2BridgeDatawareStringGrid;
   function Columns: ID2BridgeFrameworkItemGridColumns;
 
   property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect;
+  property ImportStylesComponents: Boolean read GetImportStylesComponents write SetImportStylesComponents;
   property OnGetSelectedRow: TOnGetValue read GetOnGetSelectedRow write SetOnGetSelectedRow;
   property OnSetSelectedRow: TOnSetValue read GetOnSetSelectedRow write SetOnSetSelectedRow;
   property GetEditable: TOnGetValue read GetProcEditable write SetProcEditable;
+  property TitleFontSize: Integer read GetTitleFontSize write SetTitleFontSize;
+  property TitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleFontColor write SetTitleFontColor;
+  property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
+  property TitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleBackgroundColor write SetTitleBackgroundColor;
+  property ZebraGrid: Boolean read GetZebraGrid write SetZebraGrid;
+  property ZebraOddColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetZebraOddColor write SetZebraOddColor;
+  property ZebraPairColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetZebraPairColor write SetZebraPairColor;
  end;
 
 
@@ -710,20 +746,44 @@ end;
  ['{29B70339-F160-4872-BFBC-0613061EEF02}']
   function GetMultiSelect: Boolean;
   Procedure SetMultiSelect(AMultiSelect: Boolean);
+  function GetImportStylesComponents: Boolean;
+  procedure SetImportStylesComponents(Value: Boolean);
   procedure SetOnGetSelectedRow(AOnGetSelectedRow: TOnGetValue);
   function GetOnGetSelectedRow: TOnGetValue;
   procedure SetOnSetSelectedRow(AOnSetSelectedRow: TOnSetValue);
   function GetOnSetSelectedRow: TOnSetValue;
   function GetProcEditable: TOnGetValue;
   procedure SetProcEditable(const Value: TOnGetValue);
+  function GetTitleFontSize: Integer;
+  procedure SetTitleFontSize(Value: Integer);
+  function GetTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontStyles: TFontStyles;
+  procedure SetTitleFontStyles(Value: TFontStyles);
+  function GetTitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleBackgroundColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetZebraGrid: Boolean;
+  procedure SetZebraGrid(Value: Boolean);
+  function GetZebraOddColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetZebraOddColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetZebraPairColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetZebraPairColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
 
   function Dataware : ID2BridgeDatawareOnlyDataSource;
   function Columns: ID2BridgeFrameworkItemGridColumns;
 
   property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect;
+  property ImportStylesComponents: Boolean read GetImportStylesComponents write SetImportStylesComponents;
   property OnGetSelectedRow: TOnGetValue read GetOnGetSelectedRow write SetOnGetSelectedRow;
   property OnSetSelectedRow: TOnSetValue read GetOnSetSelectedRow write SetOnSetSelectedRow;
   property GetEditable: TOnGetValue read GetProcEditable write SetProcEditable;
+  property TitleFontSize: Integer read GetTitleFontSize write SetTitleFontSize;
+  property TitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleFontColor write SetTitleFontColor;
+  property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
+  property TitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleBackgroundColor write SetTitleBackgroundColor;
+  property ZebraGrid: Boolean read GetZebraGrid write SetZebraGrid;
+  property ZebraOddColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetZebraOddColor write SetZebraOddColor;
+  property ZebraPairColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetZebraPairColor write SetZebraPairColor;
  end;
 
  ID2BridgeFrameworkItemDBEdit = interface(ID2BridgeFrameworkItem)
