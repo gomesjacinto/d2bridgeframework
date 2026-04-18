@@ -63,7 +63,7 @@ uses
 {$ENDIF}
   D2Bridge.Interfaces, D2Bridge.Rest.Interfaces, D2Bridge.Rest.Session,
   Prism.Interfaces, Prism.DataWare.Mapped, Prism.BaseClass.Sessions,
-  Prism.BaseClass.Timer, Prism.Options, Prism.Options.Security.Event;
+  Prism.BaseClass.Timer, Prism.Options, Prism.Options.Security.Event, Prism.ResourceMonitor;
 
 
 type
@@ -102,6 +102,9 @@ type
    FPrismOptions: IPrismOptions;
    FServerController: ID2BridgeServerControllerBase;
    FPrismLog: TPrismLog;
+  FPrismResourceMonitor: TPrismResourceMonitor;
+  FPrismResourceTimer: TPrismTimer;
+  FLastResourceMonitorSnapshot: string;
    FServerUUID: string;
    FSessions: IPrismSessions;
    FPrismTimer: TPrismTimer;
@@ -109,6 +112,8 @@ type
    procedure SetServerPort(APort: Integer);
    function GetOptions: IPrismOptions;
    procedure OnTimerObserver;
+  procedure OnResourceMonitorTimer;
+  function BuildExceptionResourceLogSuffix: string;
 {$IFDEF D2BRIDGE}
    procedure SupportFileFromRC(AResourceName: string; AFileName: string; APath: string; ASaveFilesonDisk: boolean); overload;
    procedure SupportFileFromRC(AResourceName: string; var AFileContent: string); overload;
@@ -133,6 +138,8 @@ type
    procedure Log(const SessionIdenty, ErrorForm, ErrorObject, ErrorEvent, ErrorMsg: string);
    procedure LogSecurity(const SecEventInfo: TSecuritEventInfo);
    procedure LogAccess(const APrismSessionInfo: IPrismSessionInfo);
+  function ResourceMonitorSnapshot: string;
+  function CurrentAppResourceSnapshot: string;
   published
    function Started: boolean;
    procedure StartServer;
@@ -223,6 +230,7 @@ begin
   TD2BridgeRest.Create;
 
  FPrismOptions:= TPrismOptions.Create;
+ FPrismResourceMonitor := TPrismResourceMonitor.Create;
 
  FPrismTimer:= TPrismTimer.Create(Options.HeartBeatTime, OnTimerObserver); 
 
@@ -271,6 +279,8 @@ begin
 
 
  FPrismTimer.Terminate;
+ if Assigned(FPrismResourceTimer) then
+  FPrismResourceTimer.Terminate;
  Sleep(100);
 
  //**The PrismServerTCP is Terminated**
@@ -289,6 +299,7 @@ begin
  FreeAndNil(FPrismServerHTMLHeaders);
 
  FreeAndNil(FPrismServerHTML);
+ FreeAndNil(FPrismResourceMonitor);
 
  vPrismOptions:= FPrismOptions as TPrismOptions;
  FPrismOptions:= nil;
@@ -358,7 +369,7 @@ end;
 
 procedure TPrismBaseClass.DoException(Sender: TObject; E: Exception; APrismSession: IPrismSession; EventName: string);
 var
- vComponentName, vFormName: String;
+ vComponentName, vFormName, vSessionIdentity: String;
  vForm: TObject;
  vProc: TPrismSessionThreadProc;
  vListParam: TList<TValue>;
@@ -366,6 +377,7 @@ begin
  try
   vComponentName:= '';
   vFormName:= '';
+  vSessionIdentity:= '';
   vForm:= nil;
 
   if Assigned(Sender) then
@@ -373,39 +385,42 @@ begin
     vComponentName:= TComponent(Sender).Name;
 
   if Assigned(APrismSession) then
+  begin
+   vSessionIdentity:= APrismSession.InfoConnection.Identity;
+
    if Assigned(APrismSession.ActiveForm) then
    begin
+    vFormName:= APrismSession.ActiveForm.Name;
+
     if (APrismSession.ActiveForm as TPrismForm).D2BridgeForm <> nil then
     begin
      vForm:= (APrismSession.ActiveForm as TPrismForm).D2BridgeForm;
      vFormName:= TD2BridgeForm(vForm).Name;
     end;
    end;
+  end;
 
 
   if Assigned(Options) then
    if Options.LogException then
-   begin
     if Assigned(APrismSession) then
-     FPrismLog.Log
+     Log
       (
-       APrismSession.InfoConnection.Identity,
-       APrismSession.ActiveForm.Name,
+       vSessionIdentity,
+       vFormName,
        vComponentName,
        EventName,
        E.Message
       )
     else
-     FPrismLog.Log
+     Log
       (
        '',
        '',
        vComponentName,
        EventName,
        E.Message
-      )
-
-   end;
+      );
 
   if Assigned(FOnPrismException) then
   begin
@@ -901,7 +916,30 @@ procedure TPrismBaseClass.Log(const SessionIdenty, ErrorForm, ErrorObject, Error
 begin
  if FPrismOptions.LogException then
   if Assigned(FPrismLog) then
-   FPrismLog.Log(SessionIdenty, ErrorForm, ErrorObject, ErrorEvent, ErrorMsg);
+  FPrismLog.Log(SessionIdenty, ErrorForm, ErrorObject, ErrorEvent, ErrorMsg + BuildExceptionResourceLogSuffix);
+end;
+
+function TPrismBaseClass.BuildExceptionResourceLogSuffix: string;
+var
+ vSessionCount: Integer;
+ vSnapshot: string;
+begin
+ Result:= '';
+
+ if not Assigned(FPrismResourceMonitor) then
+  Exit;
+
+ try
+  vSessionCount:= 0;
+  if Assigned(FSessions) then
+   vSessionCount:= FSessions.Count;
+
+  vSnapshot:= FPrismResourceMonitor.BuildSnapshotLog(vSessionCount, True);
+  if vSnapshot <> '' then
+   Result:= ' | ResourceMonitor = ' + vSnapshot;
+ except
+  Result:= '';
+ end;
 end;
 
 procedure TPrismBaseClass.LogAccess(const APrismSessionInfo: IPrismSessionInfo);
@@ -1008,6 +1046,43 @@ begin
   FreeAndNil(vSessions);
   FPrismTimer.Resume;
  end;
+end;
+
+  procedure TPrismBaseClass.OnResourceMonitorTimer;
+  var
+    vMessage: string;
+  begin
+    if not Assigned(FPrismResourceMonitor) then
+      Exit;
+
+    if not FPrismResourceMonitor.Enabled then
+      Exit;
+
+    if not Assigned(FPrismLog) then
+      Exit;
+
+    try
+      vMessage := FPrismResourceMonitor.BuildSnapshotLog(Sessions.Count);
+      if vMessage <> '' then
+      begin
+        FLastResourceMonitorSnapshot := vMessage;
+        FPrismLog.LogDiagnostic('ResourceMonitor', vMessage);
+      end;
+    except
+    end;
+  end;
+
+  function TPrismBaseClass.ResourceMonitorSnapshot: string;
+  begin
+    Result := FLastResourceMonitorSnapshot;
+  end;
+
+function TPrismBaseClass.CurrentAppResourceSnapshot: string;
+begin
+ if Assigned(FPrismResourceMonitor) then
+  Result := FPrismResourceMonitor.BuildCurrentAppSnapshot
+ else
+  Result := '';
 end;
 
 
@@ -1124,10 +1199,13 @@ begin
 end;
 
 procedure TPrismBaseClass.StartServer;
+var
+ LDefaultRootDirectory: string;
 begin
  if not Started then
  begin
   FServerUUID:= GenerateRandomString(SizeServerUUID);
+  LDefaultRootDirectory:= 'wwwroot' + PathDelim;
 
   {$REGION 'INI Config'}
   if not ServerController.IsD2DockerContext then
@@ -1136,16 +1214,45 @@ begin
     ServerController.APPConfig.FileINIConfig.WriteInteger('D2Bridge Server Config', 'Server Port', ServerPort);
     ServerController.APPConfig.FileINIConfig.WriteString('D2Bridge Server Config', 'Server Name', ServerController.ServerName);
     ServerController.APPConfig.FileINIConfig.WriteString('D2Bridge Server Config', 'Server Description', ServerController.ServerName);
+    if not ServerController.APPConfig.FileINIConfig.ValueExists('D2Bridge Log', 'ResourceMonitor') then
+      ServerController.APPConfig.FileINIConfig.WriteBool('D2Bridge Log', 'ResourceMonitor', False);
+
+    if not ServerController.APPConfig.FileINIConfig.ValueExists('D2Bridge Log', 'ResourceMonitorIntervalSec') then
+      ServerController.APPConfig.FileINIConfig.WriteInteger('D2Bridge Log', 'ResourceMonitorIntervalSec', 300);
+
+    if not ServerController.APPConfig.FileINIConfig.ValueExists('D2Bridge Log', 'ResourceMonitorTopProcessCount') then
+      ServerController.APPConfig.FileINIConfig.WriteInteger('D2Bridge Log', 'ResourceMonitorTopProcessCount', 3);
+
+    if not ServerController.APPConfig.FileINIConfig.ValueExists('D2Bridge Log', 'ResourceMonitorCPUAlertPercent') then
+      ServerController.APPConfig.FileINIConfig.WriteInteger('D2Bridge Log', 'ResourceMonitorCPUAlertPercent', 70);
+
+    if not ServerController.APPConfig.FileINIConfig.ValueExists('D2Bridge Log', 'ResourceMonitorMemoryAlertMB') then
+      ServerController.APPConfig.FileINIConfig.WriteInteger('D2Bridge Log', 'ResourceMonitorMemoryAlertMB', 2048);
 
     if SameText(ServerController.APPConfig.FileINIConfig.ReadString('D2Bridge Log', 'LogFileMode', 'session'), 'daily') then
      FPrismOptions.LogFileMode:= lfmDaily;
+
+    FPrismResourceMonitor.Configure(
+      ServerController.APPConfig.FileINIConfig.ReadBool('D2Bridge Log', 'ResourceMonitor', False),
+      ServerController.APPConfig.FileINIConfig.ReadInteger('D2Bridge Log', 'ResourceMonitorIntervalSec', 300),
+      ServerController.APPConfig.FileINIConfig.ReadInteger('D2Bridge Log', 'ResourceMonitorTopProcessCount', 3),
+      ServerController.APPConfig.FileINIConfig.ReadInteger('D2Bridge Log', 'ResourceMonitorCPUAlertPercent', 70),
+      ServerController.APPConfig.FileINIConfig.ReadInteger('D2Bridge Log', 'ResourceMonitorMemoryAlertMB', 2048));
    end;
   {$ENDREGION}
 
   FPrismThreadServerTCP.Port:= ServerPort;
 
-  if (FPrismOptions.LogException) or (FPrismOptions.LogSecurity) then
+  if (FPrismOptions.LogException) or (FPrismOptions.LogSecurity) or (FPrismOptions.LogAccess) or
+     (Assigned(FPrismResourceMonitor) and FPrismResourceMonitor.Enabled) then
    FPrismLog:= TPrismLog.Create(FPrismOptions.LogFile, FPrismOptions.LogFileMode = lfmDaily);
+
+  if Assigned(FPrismLog) and Assigned(FPrismResourceMonitor) and FPrismResourceMonitor.Enabled then
+    FPrismLog.LogDiagnostic('ResourceMonitor', 'Bootstrap | LogFile=' + FPrismOptions.LogFile +
+      ' | IntervalSec=' + IntToStr(FPrismResourceMonitor.IntervalMilliseconds div 1000));
+
+  if SameText(ExcludeTrailingPathDelimiter(Options.RootDirectory), ExcludeTrailingPathDelimiter(LDefaultRootDirectory)) then
+   Options.RootDirectory:= IncludeTrailingPathDelimiter(ExpandFileName(ExtractFilePath(ParamStr(0)) + Options.RootDirectory));
 
   if not DirectoryExists(Options.RootDirectory) then
   ForceDirectories(Options.RootDirectory);
@@ -1200,7 +1307,19 @@ begin
   except
   end;
 
-  //FPrismTimer.Resume;
+  if Assigned(FPrismResourceMonitor) and FPrismResourceMonitor.Enabled then
+  begin
+    try
+      FLastResourceMonitorSnapshot := FPrismResourceMonitor.BuildSnapshotLog(Sessions.Count);
+    except
+      FLastResourceMonitorSnapshot := '';
+    end;
+
+    if not Assigned(FPrismResourceTimer) then
+      FPrismResourceTimer := TPrismTimer.Create(FPrismResourceMonitor.IntervalMilliseconds, OnResourceMonitorTimer);
+
+    FPrismResourceTimer.Resume;
+  end;
  end;
 end;
 
@@ -1226,6 +1345,9 @@ begin
 
  if Assigned(FPrismLog) then
   FreeAndNil(FPrismLog);
+
+ if Assigned(FPrismResourceTimer) then
+  FPrismResourceTimer.Pause;
 
  if Assigned(FPrismTimer) then
   FPrismTimer.Pause;

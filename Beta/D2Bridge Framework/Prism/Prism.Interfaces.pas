@@ -1430,6 +1430,18 @@ type
   procedure SetCSS(const Value: String);
   function GetHTML: String;
   procedure SetHTML(const Value: String);
+  function GetFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetFontStyles: TFontStyles;
+  procedure SetFontStyles(Value: TFontStyles);
+  function GetBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetBackgroundColor(AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontStyles: TFontStyles;
+  procedure SetTitleFontStyles(Value: TFontStyles);
+  function GetTitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetTitleBackgroundColor(AValue: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
 
   function Buttons: IPrismGridColumnButtons;
   function ButtonFromButtonModel(AButtonModel: IButtonModel): IPrismGridColumnButton;
@@ -1449,6 +1461,12 @@ type
   property HTML: String read GetHTML write SetHTML;
   property Alignment: TPrismAlignment read GetAlignment write SetAlignment;
   property SelectItems: TJSONObject read GetSelectItems write SetSelectItems;
+  property FontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetFontColor write SetFontColor;
+  property FontStyles: TFontStyles read GetFontStyles write SetFontStyles;
+  property BackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetBackgroundColor write SetBackgroundColor;
+  property TitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleFontColor write SetTitleFontColor;
+  property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
+  property TitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleBackgroundColor write SetTitleBackgroundColor;
  end;
 
 
@@ -1484,6 +1502,22 @@ type
    Procedure SetMultiSelectWidth(Value: integer);
    function RecNo: integer; overload;
    function RecNo(AValue: Integer): boolean; overload;
+  function GetTitleFontSize: Integer;
+  Procedure SetTitleFontSize(Value: Integer);
+  function GetTitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  Procedure SetTitleFontColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetTitleFontStyles: TFontStyles;
+  Procedure SetTitleFontStyles(Value: TFontStyles);
+  function GetTitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  Procedure SetTitleBackgroundColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetImportStylesComponents: Boolean;
+  procedure SetImportStylesComponents(Value: Boolean);
+  function GetZebraGrid: Boolean;
+  procedure SetZebraGrid(Value: Boolean);
+  function GetZebraOddColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetZebraOddColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
+  function GetZebraPairColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF};
+  procedure SetZebraPairColor(Value: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF});
 
    procedure SetDataToJSON;
    function GetDataToJSON: String;
@@ -1502,6 +1536,14 @@ type
    property ShowPager: Boolean read GetShowPager write SetShowPager;
    property Editable: Boolean read GetEditable;
    property DataToJSON: String read GetDataToJSON;
+   property TitleFontSize: Integer read GetTitleFontSize write SetTitleFontSize;
+   property TitleFontColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleFontColor write SetTitleFontColor;
+   property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
+   property TitleBackgroundColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetTitleBackgroundColor write SetTitleBackgroundColor;
+   property ImportStylesComponents: Boolean read GetImportStylesComponents write SetImportStylesComponents;
+   property ZebraGrid: Boolean read GetZebraGrid write SetZebraGrid;
+   property ZebraOddColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetZebraOddColor write SetZebraOddColor;
+   property ZebraPairColor: {$IFNDEF FMX}TColor{$ELSE}TAlphaColor{$ENDIF} read GetZebraPairColor write SetZebraPairColor;
  end;
 
 

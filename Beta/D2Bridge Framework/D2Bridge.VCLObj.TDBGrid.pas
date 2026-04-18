@@ -44,7 +44,6 @@ uses
 type
   TVCLObjTDBGrid = class(TD2BridgeItemVCLObjCore)
   private
-    function DBGridColumnByPrismColumnIndex(aCol: integer): TColumn;
     procedure TDBGridOnSelect(EventParams: TStrings);
     procedure TDBGridOnCheck(EventParams: TStrings);
     procedure TDBGridOnUnCheck(EventParams: TStrings);
@@ -69,8 +68,8 @@ type
 implementation
 
 uses
-  SysUtils, DB,
-  D2Bridge.Types, D2Bridge.Util, D2Bridge.JSON,
+  SysUtils, DB, Graphics,
+  D2Bridge.Types, D2Bridge.Util, D2Bridge.JSON, D2Bridge.Item.VCLObj.Style,
   Prism.Grid, Prism.Util, Prism.Types;
 
 { TVCLObjTDBGrid }
@@ -79,24 +78,6 @@ uses
 function TVCLObjTDBGrid.CSSClass: String;
 begin
  result:= 'table table-hover table-sm table-bordered ui-jqgrid-htable d2bridgedbgrid cursor-pointer';
-end;
-
-function TVCLObjTDBGrid.DBGridColumnByPrismColumnIndex(aCol: integer): TColumn;
-var
- I, X: Integer;
- vPrismColumns: ID2BridgeFrameworkItemGridColumns;
-begin
- vPrismColumns:= FD2BridgeItemVCLObj.BaseClass.FrameworkExportType.DBGrid.Columns;
-
- if vPrismColumns.Items.Count >= aCol then
-  for I := 0 to Pred(vPrismColumns.Items.Count) do
-   if vPrismColumns.Items[I].DataField <> '' then
-    for X := 0 to Pred(TDBGrid(FD2BridgeItemVCLObj.Item).Columns.Count) do
-     if SameText(vPrismColumns.Items[I].DataField, TDBGrid(FD2BridgeItemVCLObj.Item).Columns[X].FieldName) then
-     begin
-      result:= TDBGrid(FD2BridgeItemVCLObj.Item).Columns[X];
-      break;
-     end;
 end;
 
 function TVCLObjTDBGrid.FrameworkItemClass: ID2BridgeFrameworkItem;
@@ -287,6 +268,17 @@ begin
    Title:= TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Title.Caption;
    Visible:= TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Visible;
    Width:= WidthPPI(TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Width);
+  if (FrameworkItemClass as ID2BridgeFrameworkItemDBGrid).ImportStylesComponents then
+   begin
+    if TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Font.Color <> DefaultFontColor then
+     FontColor:= TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Font.Color;
+    if TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Font.Style <> [] then
+     FontStyles:= TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Font.Style;
+    if TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Title.Font.Color <> DefaultFontColor then
+     TitleFontColor:= TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Title.Font.Color;
+    if TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Title.Font.Style <> [] then
+     TitleFontStyles:= TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Title.Font.Style;
+   end;
    if (not TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].ReadOnly) then
    Editable:= true;
    case TDBGrid(FD2BridgeItemVCLObj.Item).Columns[I].Alignment of
@@ -304,6 +296,18 @@ begin
    end;
   end;
  end;
+
+ if (FrameworkItemClass as ID2BridgeFrameworkItemDBGrid).ImportStylesComponents then
+ begin
+  if TDBGrid(FD2BridgeItemVCLObj.Item).TitleFont.Size <> DefaultFontSize then
+   (FrameworkItemClass as ID2BridgeFrameworkItemDBGrid).TitleFontSize:= TDBGrid(FD2BridgeItemVCLObj.Item).TitleFont.Size;
+  if TDBGrid(FD2BridgeItemVCLObj.Item).TitleFont.Color <> DefaultFontColor then
+   (FrameworkItemClass as ID2BridgeFrameworkItemDBGrid).TitleFontColor:= TDBGrid(FD2BridgeItemVCLObj.Item).TitleFont.Color;
+  if TDBGrid(FD2BridgeItemVCLObj.Item).TitleFont.Style <> [] then
+   (FrameworkItemClass as ID2BridgeFrameworkItemDBGrid).TitleFontStyles:= TDBGrid(FD2BridgeItemVCLObj.Item).TitleFont.Style;
+  if not IsColor(TDBGrid(FD2BridgeItemVCLObj.Item).FixedColor, [clBtnFace, clDefault]) then
+   (FrameworkItemClass as ID2BridgeFrameworkItemDBGrid).TitleBackgroundColor:= TDBGrid(FD2BridgeItemVCLObj.Item).FixedColor;
+ end;
 end;
 
 function TVCLObjTDBGrid.VCLClass: TClass;
@@ -313,7 +317,19 @@ end;
 
 procedure TVCLObjTDBGrid.VCLStyle(const VCLObjStyle: ID2BridgeItemVCLObjStyle);
 begin
+ if not (FrameworkItemClass as ID2BridgeFrameworkItemDBGrid).ImportStylesComponents then
+  Exit;
 
+ if TDBGrid(FD2BridgeItemVCLObj.Item).Font.Size <> DefaultFontSize then
+  VCLObjStyle.FontSize := TDBGrid(FD2BridgeItemVCLObj.Item).Font.Size;
+
+ if TDBGrid(FD2BridgeItemVCLObj.Item).Font.Color <> DefaultFontColor then
+  VCLObjStyle.FontColor := TDBGrid(FD2BridgeItemVCLObj.Item).Font.Color;
+
+ if not IsColor(TDBGrid(FD2BridgeItemVCLObj.Item).Color, [clWindow, clDefault]) then
+  VCLObjStyle.Color := TDBGrid(FD2BridgeItemVCLObj.Item).Color;
+
+ VCLObjStyle.FontStyles := TDBGrid(FD2BridgeItemVCLObj.Item).Font.Style;
 end;
 {$ELSE}
 implementation
