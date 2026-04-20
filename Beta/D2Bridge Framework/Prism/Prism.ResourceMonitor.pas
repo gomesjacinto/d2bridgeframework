@@ -37,9 +37,78 @@ interface
 uses
   Classes, SysUtils
 {$IFDEF MSWINDOWS}
-  , Windows, TlHelp32, PsAPI, Generics.Collections
+  , Windows,  Generics.Collections
 {$ENDIF}
   ;
+
+
+{$IFDEF MSWINDOWS}
+type
+  SIZE_T = NativeUInt;
+
+  TProcessMemoryCounters = record
+    cb: DWORD;
+    PageFaultCount: DWORD;
+    PeakWorkingSetSize: SIZE_T;
+    WorkingSetSize: SIZE_T;
+    QuotaPeakPagedPoolUsage: SIZE_T;
+    QuotaPagedPoolUsage: SIZE_T;
+    QuotaPeakNonPagedPoolUsage: SIZE_T;
+    QuotaNonPagedPoolUsage: SIZE_T;
+    PagefileUsage: SIZE_T;
+    PeakPagefileUsage: SIZE_T;
+  end;
+  PProcessMemoryCounters = ^TProcessMemoryCounters;
+
+function GetProcessMemoryInfo(Process: THandle;
+  ppsmemCounters: PProcessMemoryCounters;
+  cb: DWORD): BOOL; stdcall; external 'psapi.dll';
+{$ENDIF}
+
+{$IFDEF MSWINDOWS}
+type
+  TMemoryStatusEx = record
+    dwLength: DWORD;
+    dwMemoryLoad: DWORD;
+    ullTotalPhys: UInt64;
+    ullAvailPhys: UInt64;
+    ullTotalPageFile: UInt64;
+    ullAvailPageFile: UInt64;
+    ullTotalVirtual: UInt64;
+    ullAvailVirtual: UInt64;
+    ullAvailExtendedVirtual: UInt64;
+  end;
+  PMemoryStatusEx = ^TMemoryStatusEx;
+
+function GlobalMemoryStatusEx(lpBuffer: PMemoryStatusEx): BOOL; stdcall; external 'kernel32.dll';
+{$ENDIF}
+
+
+{$IFDEF MSWINDOWS}
+
+type
+  TProcessEntry32 = record
+    dwSize: DWORD;
+    cntUsage: DWORD;
+    th32ProcessID: DWORD;
+    th32DefaultHeapID: ULONG_PTR;
+    th32ModuleID: DWORD;
+    cntThreads: DWORD;
+    th32ParentProcessID: DWORD;
+    pcPriClassBase: LONG;
+    dwFlags: DWORD;
+    szExeFile: array[0..MAX_PATH - 1] of Char;
+  end;
+  PProcessEntry32 = ^TProcessEntry32;
+
+const
+  TH32CS_SNAPPROCESS = $00000002;
+
+function CreateToolhelp32Snapshot(dwFlags, th32ProcessID: DWORD): THandle; stdcall; external 'kernel32.dll';
+function Process32First(hSnapshot: THandle; lppe: PProcessEntry32): BOOL; stdcall; external 'kernel32.dll';
+function Process32Next(hSnapshot: THandle; lppe: PProcessEntry32): BOOL; stdcall; external 'kernel32.dll';
+
+{$ENDIF}
 
 type
   TPrismResourceMonitor = class
@@ -76,6 +145,12 @@ type
   end;
 
 implementation
+
+{$IFDEF MSWINDOWS}
+  {$IFDEF FPC}
+function GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime: PFileTime): BOOL; stdcall; external 'kernel32.dll';
+  {$ENDIF}
+{$ENDIF}
 
 constructor TPrismResourceMonitor.Create;
 begin
@@ -191,9 +266,9 @@ begin
 
     ZeroMemory(@vMemoryStatus, SizeOf(vMemoryStatus));
     vMemoryStatus.dwLength := SizeOf(vMemoryStatus);
-    GlobalMemoryStatusEx(vMemoryStatus);
+    GlobalMemoryStatusEx(@vMemoryStatus);
 
-    vMachineName := GetEnvironmentVariable('COMPUTERNAME');
+    vMachineName := SysUtils.GetEnvironmentVariable('COMPUTERNAME');
     if vMachineName = '' then
       vMachineName := 'unknown';
 
@@ -266,7 +341,13 @@ var
   vKernelTime: TFileTime;
   vUserTime: TFileTime;
 begin
-  Result := GetSystemTimes(vIdleTime, vKernelTime, vUserTime);
+  {$IFDEF FPC}
+    Result := GetSystemTimes(@vIdleTime, @vKernelTime, @vUserTime);
+   {$ELSE}
+    Result := GetSystemTimes(vIdleTime, vKernelTime, vUserTime);
+   {$ENDIF}
+
+
 
   if Result then
     ATotalTime := FileTimeToUInt64(vKernelTime) + FileTimeToUInt64(vUserTime)
@@ -393,7 +474,7 @@ begin
       ZeroMemory(@vProcessEntry, SizeOf(vProcessEntry));
       vProcessEntry.dwSize := SizeOf(vProcessEntry);
 
-      if Process32First(vSnapshotHandle, vProcessEntry) then
+      if Process32First(vSnapshotHandle, @vProcessEntry) then
       repeat
         vCurrentName := string(vProcessEntry.szExeFile);
 
@@ -459,15 +540,15 @@ begin
             end;
           end;
         end;
-      until not Process32Next(vSnapshotHandle, vProcessEntry);
+      until not Process32Next(vSnapshotHandle, @vProcessEntry);
     finally
       CloseHandle(vSnapshotHandle);
     end;
 
     ZeroMemory(@vMemoryStatus, SizeOf(vMemoryStatus));
     vMemoryStatus.dwLength := SizeOf(vMemoryStatus);
-    GlobalMemoryStatusEx(vMemoryStatus);
-    vMachineName := GetEnvironmentVariable('COMPUTERNAME');
+    GlobalMemoryStatusEx(@vMemoryStatus);
+    vMachineName := SysUtils.GetEnvironmentVariable('COMPUTERNAME');
     if vMachineName = '' then
       vMachineName := 'unknown';
     vAvailableMemoryMB := GetMemoryValueMB(vMemoryStatus.ullAvailPhys);
