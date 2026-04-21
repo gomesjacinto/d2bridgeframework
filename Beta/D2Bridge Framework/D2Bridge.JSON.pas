@@ -193,7 +193,7 @@ function DataSetToJSON(ADataSet: TDataSet; AColumns: TJSONArray; MaxRecords: Int
 implementation
 
 Uses
- D2Bridge.JSON.Util
+ D2Bridge.JSON.Util, Math
 {$IFDEF D2BRIDGE}
  , Prism.BaseClass
 {$ELSE}
@@ -216,6 +216,48 @@ begin
       Exit(AObj.{$IFnDEF FPC}Pairs[I].JsonValue{$ELSE}Items[I]{$ENDIF});
 end;
 
+function CreateJSONNumericValue(const AValue: Double): TJSONValue;
+begin
+ if IsNan(AValue) or IsInfinite(AValue) then
+  Result:= {$IFnDEF FPC}TJSONFloatNumber{$ELSE}TJSONFloatNumberFixed{$ENDIF}.Create(0)
+ else
+  Result:= {$IFnDEF FPC}TJSONFloatNumber{$ELSE}TJSONFloatNumberFixed{$ENDIF}.Create(AValue);
+end;
+
+function SafeNumericFieldJSONValue(AField: TField; const AFormatSettings: TFormatSettings): TJSONValue;
+var
+ LFloatValue: Double;
+ LFallbackText: string;
+ LJSONFormatSettings: TFormatSettings;
+begin
+ if (not Assigned(AField)) or AField.IsNull then
+  Exit({$IFnDEF FPC}TJSONFloatNumber{$ELSE}TJSONFloatNumberFixed{$ENDIF}.Create(0));
+
+ try
+  if AField.DataType = ftCurrency then
+   LFloatValue:= TCurrencyField(AField).AsCurrency
+  else
+   LFloatValue:= AField.AsFloat;
+
+  if (AField is TNumericField) and ((AField as TNumericField).DisplayFormat <> '') then
+   Exit(TJSONString.Create(FormatFloat((AField as TNumericField).DisplayFormat, LFloatValue, AFormatSettings)));
+
+  Exit(CreateJSONNumericValue(LFloatValue));
+ except
+  LJSONFormatSettings:= AFormatSettings;
+  LJSONFormatSettings.DecimalSeparator:= '.';
+  LJSONFormatSettings.ThousandSeparator:= #0;
+
+  LFallbackText:= Trim(StringReplace(VarToStr(AField.Value), ',', '.', [rfReplaceAll]));
+  if LFallbackText = '' then
+   Exit({$IFnDEF FPC}TJSONFloatNumber{$ELSE}TJSONFloatNumberFixed{$ENDIF}.Create(0));
+
+  if TryStrToFloat(LFallbackText, LFloatValue, LJSONFormatSettings) then
+   Exit(CreateJSONNumericValue(LFloatValue));
+
+  Result:= TJSONString.Create(LFallbackText);
+ end;
+end;
 
 
 procedure JSONObjectToDataSetRow(ADataSet: TDataset; AJSON: TJSONObject; AFormatSettings: TFormatSettings; AExcludeFields: array of string);
@@ -265,7 +307,7 @@ begin
      Continue;
 
 
-   // Proteções importantes
+   // Proteï¿½ï¿½es importantes
    if Field.ReadOnly or Field.Calculated or Field.Lookup then
      Continue;
 
@@ -330,7 +372,7 @@ begin
       Field.AsBytes := Bytes;
     end;
 
-    // Blob (Base64 – compatível com seu serializer)
+    // Blob (Base64 ï¿½ compatï¿½vel com seu serializer)
     ftBlob:
       Field.AsString := {$IFnDEF FPC}TJSONString(LValue).Value{$ELSE}LValue.AsString{$ENDIF};
 
@@ -885,19 +927,9 @@ begin
                       end;
                     // nÃºmericos
                     ftFloat{$IFDEF SUPPORTS_FTEXTENDED}, ftExtended{$ENDIF}, ftFMTBcd, ftBCD:
-                    begin
-                      if (ADataSet.Fields[lCols] as TNumericField).DisplayFormat <> '' then
-                       lJSONObject.AddPair(lColName, FormatFloat((ADataSet.Fields[lCols] as TNumericField).DisplayFormat, ADataSet.fields[lcols].AsFloat, AFormatSettings))
-                      else
-                       lJSONObject.AddPair(lColName, {$IFnDEF FPC}TJSONFloatNumber{$ELSE}TJSONFloatNumberFixed{$ENDIF}.Create(ADataSet.Fields[lCols].AsFloat));
-                    end;
+                      lJSONObject.AddPair(lColName, SafeNumericFieldJSONValue(ADataSet.Fields[lCols], AFormatSettings));
                     ftCurrency:
-                    begin
-                      if (ADataSet.Fields[lCols] as TCurrencyField).DisplayFormat <> '' then
-                       lJSONObject.AddPair(lColName, FormatFloat((ADataSet.Fields[lCols] as TCurrencyField).DisplayFormat, ADataSet.fields[lcols].AsCurrency, AFormatSettings))
-                      else
-                       lJSONObject.AddPair(lColName, {$IFnDEF FPC}TJSONFloatNumber{$ELSE}TJSONFloatNumberFixed{$ENDIF}.Create(ADataSet.Fields[lCols].AsCurrency));
-                    end;
+                      lJSONObject.AddPair(lColName, SafeNumericFieldJSONValue(ADataSet.Fields[lCols], AFormatSettings));
                     ftSmallint{$IFDEF SUPPORTS_FTEXTENDED}, ftShortint, ftSingle{$ENDIF}, ftWord, ftInteger, ftAutoInc,
                     ftLargeint{$IFDEF SUPPORTS_FTEXTENDED}, ftLongWord{$ENDIF}:
                       lJSONObject.AddPair(lColName, TJSONInt64Number.Create(Int64(ADataSet.Fields[lCols].Value)));

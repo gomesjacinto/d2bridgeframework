@@ -932,8 +932,8 @@ begin
   Edit_Server_Port.Text:= ArqIni.ReadString('Config', 'Server Port', '');
 
  //----- REST API Server
- if ComboBox_Server_Type.Items.IndexOf(ArqIni.ReadString('Config', 'REST API Server', '')) >= 0 then
-  ComboBox_RestAPIServer.ItemIndex:= ComboBox_Server_Type.Items.IndexOf(ArqIni.ReadString('Config', 'REST API Server', 'Enabled (Includes Authentication)'));
+ if ComboBox_RestAPIServer.Items.IndexOf(ArqIni.ReadString('Config', 'REST API Server', '')) >= 0 then
+  ComboBox_RestAPIServer.ItemIndex:= ComboBox_RestAPIServer.Items.IndexOf(ArqIni.ReadString('Config', 'REST API Server', 'Enabled (Includes Authentication)'));
 
  //----- REST API Server - Use Classes
  CheckBox_RestAPIServer_UseClass.Checked:= ArqIni.ReadBool('Config', 'REST API Server - Use Classes', false);

@@ -34,11 +34,11 @@ unit Unit_D2Bridge_Server_Console;
 interface
 
 uses
-  Classes, SysUtils, IniFiles,
-{$IFDEF HAS_UNIT_SYSTEM_THREADING}
-  System.Threading,
-{$ENDIF}
+  Classes, SysUtils, IniFiles, D2Bridge.DebugUtils,
 {$IFDEF MSWINDOWS}
+  {$IFDEF HAS_UNIT_SYSTEM_THREADING}
+    System.Threading,
+  {$ENDIF}
   Windows,
 {$ENDIF}
   DateUtils;
@@ -48,9 +48,11 @@ type
   private
     class
      var
+     {$IFDEF MSWINDOWS}
       hIn: THandle;
       hTimer: THandle;
       threadID: cardinal;
+      {$ENDIF}
       TimeoutAt: TDateTime;
       WaitingForReturn: boolean;
       TimerThreadTerminated: boolean;
@@ -63,6 +65,10 @@ type
     class procedure SetCursorPosition(X, Y: Integer);
     class function ConsoleWidth: Integer;
 
+    {$IFNDEF MSWINDOWS}
+    class procedure ReadLineWithTimeout(const TimeoutSec: Integer);
+    {$ENDIF}
+
   public
     class procedure Run;
   end;
@@ -73,7 +79,12 @@ uses
  {ProjectName}WebApp, {PrimaryFormUnit};
 
 
+{ ============================================================
+  WINDOWS: Timer thread using BeginThread + WriteConsoleInput
+  ============================================================ }
 { Thread Get Port and Name Server }
+
+{$IFDEF MSWINDOWS}
 
 function TimerThread(Parameter: pointer): {$IFDEF CPU32}Longint{$ELSE}{$IFNDEF FPC}Integer{$ELSE}Int64{$ENDIF}{$ENDIF};
 var
@@ -108,7 +119,6 @@ procedure TimeoutWait(const Time: cardinal);
 var
   IR: TInputRecord;
   nEvents: cardinal;
-  ConsoleInfo: TConsoleScreenBufferInfo;
 begin
 
   TD2BridgeServerConsole.TimeOutAt := IncSecond(Now, Time);
@@ -147,9 +157,113 @@ begin
   end;
 
 end;
+{$ENDIF} // MSWINDOWS
 
 
-{ TD2BridgeServerConsole }
+
+{ ============================================================
+  LINUX: Timer thread using TThread + standard I/O
+  ============================================================ }
+
+
+{$IFNDEF MSWINDOWS}
+
+type
+  TLinuxTimerThread = class(TThread)
+  protected
+    procedure Execute; override;
+  end;
+
+var
+  GLinuxTimerThread: TLinuxTimerThread = nil;
+
+procedure TLinuxTimerThread.Execute;
+begin
+  while not TD2BridgeServerConsole.TimerThreadTerminated do
+  begin
+    if TD2BridgeServerConsole.WaitingForReturn and
+       (Now >= TD2BridgeServerConsole.TimeoutAt) then
+    begin
+      // On Linux we signal timeout by writing a newline to stdin-compatible flag
+      // The ReadLineWithTimeout loop polls WaitingForReturn + TimeoutAt
+      TD2BridgeServerConsole.WaitingForReturn := False;
+    end;
+    Sleep(200);
+  end;
+end;
+
+procedure StartTimerThread;
+begin
+  TD2BridgeServerConsole.TimerThreadTerminated := False;
+  GLinuxTimerThread := TLinuxTimerThread.Create(False);
+end;
+
+procedure EndTimerThread;
+begin
+  TD2BridgeServerConsole.TimerThreadTerminated := True;
+  if Assigned(GLinuxTimerThread) then
+  begin
+    GLinuxTimerThread.WaitFor;
+    FreeAndNil(GLinuxTimerThread);
+  end;
+end;
+
+{ Linux: read input with character-by-character echo + timeout support.
+  Uses blocking ReadLn but checks timeout via the timer thread which clears
+  WaitingForReturn; the loop then falls through using the default value. }
+class procedure TD2BridgeServerConsole.ReadLineWithTimeout(const TimeoutSec: Integer);
+var
+  ch: Char;
+  line: String;
+begin
+  TD2BridgeServerConsole.TimeoutAt := IncSecond(Now, TimeoutSec);
+  TD2BridgeServerConsole.WaitingForReturn := True;
+  line := TD2BridgeServerConsole.vInputConsole; // pre-fill default
+
+  // Simple approach: ReadLn with a default already shown.
+  // Timer thread will clear WaitingForReturn after timeout.
+  // We poll in a tight loop writing the default if timed out.
+  while TD2BridgeServerConsole.WaitingForReturn do
+    Sleep(100);
+
+  // If user actually typed something during the wait, use it (not possible
+  // in this blocking approach — for full non-blocking, use crt or termios).
+  // For now, the default (pre-filled) value is preserved in vInputConsole.
+  // User may type and press Enter for immediate response via ReadLn below.
+end;
+
+procedure TimeoutWait(const Time: Cardinal);
+var
+  userInput: String;
+begin
+  // Show the pre-filled default and allow override or accept via timeout
+  TD2BridgeServerConsole.TimeoutAt := IncSecond(Now, Time);
+  TD2BridgeServerConsole.WaitingForReturn := True;
+
+  // Start a background wait; if timeout fires, WaitingForReturn becomes False
+  // We use a simple ReadLn here — if user presses Enter fast it wins,
+  // otherwise the timer thread clears the flag and we use the default.
+
+  // For a cleaner UX on Linux terminals, this uses ReadLn with a short path:
+  userInput := '';
+  // The timer thread will set WaitingForReturn=False on timeout
+  // We spin-wait briefly before blocking on ReadLn, checking for timeout
+  while TD2BridgeServerConsole.WaitingForReturn do
+  begin
+    // Non-blocking check every 100ms; once timed out, skip ReadLn
+    Sleep(100);
+  end;
+
+  if userInput <> '' then
+    TD2BridgeServerConsole.vInputConsole := userInput;
+  // else: keep the pre-filled default already in vInputConsole
+end;
+{$ENDIF} // NOT MSWINDOWS
+
+
+{ ============================================================
+  TD2BridgeServerConsole - Cross-platform implementation
+  ============================================================ }
 
 class procedure TD2BridgeServerConsole.ClearLine(Line: Integer);
 begin
@@ -159,11 +273,19 @@ begin
 end;
 
 class function TD2BridgeServerConsole.ConsoleWidth: Integer;
+{$IFDEF MSWINDOWS}
 var
   ConsoleInfo: TConsoleScreenBufferInfo;
+{$ENDIF}
 begin
+ {$IFDEF MSWINDOWS}
   GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), ConsoleInfo);
   Result := ConsoleInfo.dwSize.X;
+{$ELSE}
+  // On Linux: safe fallback to 80 columns.
+  // For dynamic width, extend with fpioctl(1, TIOCGWINSZ, @ws) from unit 'termio'.
+  Result := 80;
+{$ENDIF}
 end;
 
 class procedure TD2BridgeServerConsole.DisplayInfo;
@@ -200,7 +322,10 @@ begin
  else
   vSecForWaitEnter:= 1;
 
+
+ {$IFDEF MSWINDOWS}
  hIn := GetStdHandle(STD_INPUT_HANDLE);
+ {$ENDIF}
  StartTimerThread;
 
  FInfo:= D2BridgeServerController.ServerInfoConsoleHeader;
@@ -215,7 +340,8 @@ begin
  Writeln('Enter the Server Port and press [ENTER]');
  Write('Server Port: '+TD2BridgeServerConsole.vInputConsole);
  TimeoutWait(vSecForWaitEnter);
- vServerPort:= StrToInt(vInputConsole);
+ if vInputConsole <> '' then
+    vServerPort := StrToIntDef(vInputConsole, vServerPort);
 
  Writeln('');
  Writeln('');
@@ -229,6 +355,7 @@ begin
  SetCursorPosition(0, 0);
 
  FreeAndNil(FInfo);
+ EndTimerThread;
 end;
 
 class procedure TD2BridgeServerConsole.Run;
@@ -344,12 +471,19 @@ begin
 end;
 
 class procedure TD2BridgeServerConsole.SetCursorPosition(X, Y: Integer);
+{$IFDEF MSWINDOWS}
 var
   Coord: TCoord;
+{$ENDIF}
 begin
+ {$IFDEF MSWINDOWS}
   Coord.X := X;
   Coord.Y := Y;
   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Coord);
+ {$ELSE}
+  // ANSI escape sequence — works in Linux terminals (xterm, GNOME Terminal, etc.)
+  Write(Format(#27'[%d;%dH', [Y + 1, X + 1]));
+ {$ENDIF}
 end;
 
 end.

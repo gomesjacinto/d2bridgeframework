@@ -180,6 +180,33 @@ begin
     //End
     vMenuHTML.Add('</div>');
     vMenuHTML.Add('</nav>');
+
+    // Close sidebar when clicking outside of it
+    vMenuHTML.Add('<script>');
+    vMenuHTML.Add('(function () {');
+
+    vMenuHTML.Add('  function isSidebarVisible(sidebar) {');
+    vMenuHTML.Add('    return sidebar.getBoundingClientRect().width > 0;');
+    vMenuHTML.Add('  }');
+
+  // Close sidebar when user clicks outside (without breaking other click handlers)
+    vMenuHTML.Add('  document.addEventListener("click", function (e) {');
+    vMenuHTML.Add('    const sidebar = document.getElementById("MAINMENU1");');
+    vMenuHTML.Add('    const button  = document.getElementById("MAINMENU1button");');
+    vMenuHTML.Add('    if (!sidebar || !button) return;');
+
+    vMenuHTML.Add('    if (!isSidebarVisible(sidebar)) return;');
+
+    vMenuHTML.Add('    if (sidebar.contains(e.target) || button.contains(e.target)) return;');
+
+    // Delay closing to avoid canceling the current click event
+    vMenuHTML.Add('    setTimeout(function () {');
+    vMenuHTML.Add('      sidebar.classList.remove("collapsed");');
+    vMenuHTML.Add('    }, 0);');
+    vMenuHTML.Add('  });');
+
+    vMenuHTML.Add('})();');
+    vMenuHTML.Add('</script>');
    {$ENDREGION}
 
 

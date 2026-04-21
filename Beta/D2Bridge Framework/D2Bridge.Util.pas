@@ -61,6 +61,9 @@ uses
   {$ENDIF}
 {$ELSE}
   base64, LCLIntf, URIParser,
+{$IFDEF LINUX}
+  BaseUnix,
+{$ENDIF}
 {$ENDIF}
 {$IFDEF FMX}
   FMX.Controls, FMX.Forms, FMX.TabControl, FMX.Platform, FMX.Graphics,
@@ -74,13 +77,15 @@ uses
 
 
 {$IFDEF FPC}
-// FPC: declare as APIs que podem não existir nos headers
+ {$IFDEF MSWINDOWS}
+// FPC/Windows: declara as APIs Win32 que podem nao existir nos headers do FPC
 function ProcessIdToSessionId(dwProcessId: DWORD; var pSessionId: DWORD): BOOL; stdcall;
   external 'kernel32' name 'ProcessIdToSessionId';
 function OpenInputDesktop(dwFlags: DWORD; fInherit: BOOL; dwDesiredAccess: DWORD): THandle; stdcall;
   external 'user32' name 'OpenInputDesktop';
 function CloseDesktop(hDesktop: THandle): BOOL; stdcall;
   external 'user32' name 'CloseDesktop';
+ {$ENDIF}
 {$ENDIF}
 
 
@@ -149,7 +154,10 @@ procedure FreeInterfaceList(var AList: TList<IInterface>);
 
 {$IFDEF MSWINDOWS}
 function IsRunningAsService: Boolean;
+{$ELSE}
+function IsRunningAsService: Boolean;
 {$ENDIF}
+
 
 implementation
 
@@ -412,7 +420,7 @@ function Base64FromFile(AFile: string): string;
 var
   Output, Input: TStringStream;
 {$IFDEF FPC}
-  Encoder:       TBase64EncodingStream;
+  Encoder: TBase64EncodingStream;
 {$ENDIF}
 begin
   try
@@ -478,7 +486,12 @@ begin
 {$IFnDEF FPC}
  result:= URIEncode(AURI);
 {$ELSE}
- Result:= FilenameToURI(AURI);
+  // No FPC/Linux: EncodeURI do URIParser codifica caracteres especiais corretamente
+ {$IFDEF MSWINDOWS}
+ Result := string(FilenameToURI(AnsiString(AURI))); //EncodeURI(AURI);
+ {$ELSE}
+ Result:= string(FilenameToURI(AnsiString(AURI)));
+ {$ENDIF}
 {$ENDIF}
 end;
 
@@ -497,9 +510,17 @@ var
   R, G, B: Byte;
 begin
   if SameText(Hex, 'black') then
+{$IFDEF FPC}
+    nColor := TColor($000000)
+{$ELSE}
     nColor := TColorRec.Black
+{$ENDIF}
   else if SameText(Hex, 'white') then
+{$IFDEF FPC}
+    nColor := TColor($FFFFFF)
+{$ELSE}
     nColor := TColorRec.White
+{$ENDIF}
   // Adiciona suporte para todas as cores nomeadas disponíveis no CSS
   else if SameText(Hex, 'aqua') then
     nColor := $00FFFF
@@ -1049,11 +1070,42 @@ begin
 end;
 {$ELSE}
 function IsRunningAsService: Boolean;
+{$IFDEF FPC}
+// Linux: processo é serviço quando pai é PID 1 (systemd/init) e sem terminal
+var
+ PProcFile: string;
+ F: TextFile;
+ Line: string;
+ PPid: Integer;
+begin
+ Result := False;
+ PProcFile := Format('/proc/%d/status', [GetProcessID]);
+ if not FileExists(PProcFile) then
+  Exit;
+ AssignFile(F, PProcFile);
+ try
+  Reset(F);
+  while not EOF(F) do
+  begin
+   ReadLn(F, Line);
+   if Copy(Line, 1, 5) = 'PPid:' then
+   begin
+    PPid := StrToIntDef(Trim(Copy(Line, 6, MaxInt)), -1);
+    // Se o pai é o PID 1 (systemd/init), provavelmente é um serviço
+    Result := (PPid = 1);
+    Break;
+   end;
+  end;
+ finally
+  CloseFile(F);
+ end;
+end;
+{$ELSE}
 begin
   // Não-Windows: ajuste a sua própria heurística (systemd, etc.)
   Result := False;
 end;
 {$ENDIF}
-
+{$ENDIF}
 
 end.

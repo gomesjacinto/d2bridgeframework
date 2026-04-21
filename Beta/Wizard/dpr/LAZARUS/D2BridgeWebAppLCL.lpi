@@ -19,7 +19,7 @@
 				<CompilerOptions>
 					<Version Value="11"/>
 					<Target>
-						<Filename Value="web{PathDelim}{ProjectName}"/>
+						<Filename Value="Web{PathDelim}{ProjectName}"/>
 					</Target>
 					<SearchPaths>
 						<IncludeFiles Value="$(ProjOutDir)"/>
@@ -46,11 +46,11 @@
 					<Other>
 						<CustomOptions Value="-dD2Bridge"/>
 						<ExecuteBefore>
-							<Command Value="FixD2BridgeLazCompile.bat"/>
+							<Command Value="{FixD2BridgeLazCompile}"/>
 							<CompileReasons Compile="True" Build="False" Run="True"/>
 						</ExecuteBefore>
 						<ExecuteBefore>
-							<Command Value="FixD2BridgeLazBuild.bat"/>
+							<Command Value="{FixD2BridgeLazBuild}"/>
 							<CompileReasons Compile="False" Build="True" Run="False"/>
 						</ExecuteBefore>			
 					</Other>
@@ -60,7 +60,7 @@
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="web{PathDelim}{ProjectName}.d2d" ApplyConventions="False"/>
+            <Filename Value="Web{PathDelim}{ProjectName}.d2d" ApplyConventions="False"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -82,7 +82,7 @@
           <Other>
             <CustomOptions Value="-dD2Bridge -dD2Docker"/>
             <ExecuteBefore>
-              <Command Value="FixD2BridgeLazBuild.bat"/>
+              <Command Value="{FixD2BridgeLazBuild}"/>
               <CompileReasons Build="False"/>
             </ExecuteBefore>
           </Other>
@@ -154,7 +154,7 @@
 	<CompilerOptions>
 		<Version Value="11"/>
 		<Target>
-			<Filename Value="web{PathDelim}{ProjectName}"/>
+			<Filename Value="Web{PathDelim}{ProjectName}"/>
 		</Target>
 		<SearchPaths>
 			<IncludeFiles Value="$(ProjOutDir)"/>
@@ -192,11 +192,11 @@
 		<Other>
 			<CustomOptions Value="-dD2Bridge"/>
       <ExecuteBefore>
-        <Command Value="FixD2BridgeLazCompile.bat"/>
+        <Command Value="{FixD2BridgeLazCompile}"/>
         <CompileReasons Compile="True" Build="False" Run="True"/>
       </ExecuteBefore>
       <ExecuteBefore>
-        <Command Value="FixD2BridgeLazBuild.bat"/>
+        <Command Value="{FixD2BridgeLazBuild}"/>
         <CompileReasons Compile="False" Build="True" Run="False"/>
       </ExecuteBefore>		
 		</Other>

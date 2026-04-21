@@ -563,24 +563,36 @@ body.swal2-shown > [aria-hidden='true'] {
 }
 
 .d2bridgesidemenu {
-    max-width: 264px;
+    width: 264px;
     min-width: 264px;
-    transition: all 0.35s ease-in-out;
+    max-width: 264px;
+
     position: fixed;
-    height: 100%;
+    inset-block: 0;                 /* top:0; bottom:0 */
+    inset-inline-start: 0;          /* LTR: left | RTL: right */
+
+    background: inherit;
     z-index: 1000;
+
+    transition: transform 0.35s ease-in-out;
+    will-change: transform;
 }
 
 .d2bridgesidemenucontent {
     display: flex;
     flex-direction: column;
+
     min-height: 100vh;
     min-width: 0;
-    overflow: auto;
-    transition: all 0.35s ease-in-out;
-    left: 264px;
-    width: calc(100% - 264px);
+
     position: relative;
+
+    inset-inline-start: 264px;
+    width: calc(100% - 264px);
+
+    transition:
+        inset-inline-start 0.35s ease-in-out,
+        width 0.35s ease-in-out;
 }
 
 
@@ -682,9 +694,21 @@ a.d2bridgesidemenu-link {
 
 
 @media (min-width:768px) {
-    .d2bridgesidemenu.collapsed ~ .d2bridgesidemenucontent {
-        left: 0;
+     .d2bridgesidemenu.collapsed ~ .d2bridgesidemenucontent {
+        inset-inline-start: 0;
         width: 100%;
+    }
+
+	.d2bridgesidemenu {
+        transform: translateX(0);
+    }
+
+    .d2bridgesidemenu.collapsed {
+        transform: translateX(-264px);
+    }
+
+    [dir="rtl"] .d2bridgesidemenu.collapsed {
+        transform: translateX(264px);
     }
 }
 
@@ -724,35 +748,27 @@ a.d2bridgesidemenu-link {
     text-indent: 90px;
 }
 
-.d2bridgesidemenu.collapsed {
-    margin-left: -264px;
-}
-
 @media (max-width:767.98px) {
-
     .d2bridgesidemenu {
-        margin-left: -264px;
+        transform: translateX(-100%);
     }
 
+    /* RTL */
+    [dir="rtl"] .d2bridgesidemenu {
+        transform: translateX(100%);
+    }
+
+    /*  (collapsed = open) */
     .d2bridgesidemenu.collapsed {
-        margin-left: 0;
+        transform: translateX(0);
     }
 
-    .d2bridgesidemenu:not(.collapsed) ~ .d2bridgesidemenucontent {
-        left: 0;
+    /* content */
+    .d2bridgesidemenucontent {
+        inset-inline-start: 0;
         width: 100%;
     }
-
-    .navbar {        
-        /* width: 100vw; */
-    }
 }
-
-
-
-
-
-
 
 /* card-center */
 .card-center-sm {

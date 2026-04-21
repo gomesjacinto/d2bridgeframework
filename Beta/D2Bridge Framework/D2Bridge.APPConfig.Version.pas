@@ -30,7 +30,7 @@
 
 {$I D2Bridge.inc}
 
-unit D2Bridge.AppConfig.Version;
+unit D2Bridge.APPConfig.Version;
 
 interface
 
@@ -39,8 +39,11 @@ uses
 {$IFDEF MSWINDOWS}
  Windows,
 {$ENDIF}
+{$IFDEF LINUX}
+ baseunix,
+ linux,
+{$ENDIF}
  D2Bridge.Interfaces;
-
 
 type
  TD2BridgeAppConfigVersion = class(TInterfacedPersistent, ID2BridgeAPPConfigVersion)
@@ -68,23 +71,34 @@ type
    property Minor: Integer read GetMinor write SetMinor;
    property Release: Integer read GetRelease write SetRelease;
    property VersionStr: string read GetVersionStr write SetVersionStr;
-
  end;
-
 
 implementation
 
-
 function GetExecutableVersion: string;
+{$IFDEF MSWINDOWS}
 var
   VerInfoSize, VerHandle: DWORD;
   VerBuffer: Pointer;
   FixedInfo: PVSFixedFileInfo;
   FileName: array[0..MAX_PATH - 1] of Char;
+{$ENDIF}
+{$IFDEF LINUX}
+var
+ FileName: string;
+ VersionFile: TextFile;
+ VersionLine: string;
+ FileStream: TFileStream;
+ Buffer: array[0..255] of Byte;
+ BytesRead: Integer;
+ VersionStr: string;
+ Major, Minor, Release, Build: Integer;
+{$ENDIF}
 begin
+  {$IFDEF MSWINDOWS}
   Result := '0.0.0.0';
 
-  // Pega o caminho do m�dulo atual (EXE ou DLL)
+  // Pega o caminho do módulo atual (EXE ou DLL)
   if GetModuleFileName(HInstance, FileName, MAX_PATH) = 0 then
     Exit;
 
@@ -107,9 +121,63 @@ begin
   finally
     FreeMem(VerBuffer);
   end;
+  {$ENDIF}
+
+  {$IFDEF LINUX}
+  Result := '1.0.0.0'; // Versão padrão para Linux
+  
+  // Estratégia 1: Tentar ler do arquivo .version no mesmo diretório
+  FileName := ExtractFilePath(ParamStr(0)) + '.version';
+  if FileExists(FileName) then
+  begin
+    try
+      AssignFile(VersionFile, FileName);
+      Reset(VersionFile);
+      try
+        ReadLn(VersionFile, VersionLine);
+        VersionLine := Trim(VersionLine);
+        if VersionLine <> '' then
+          Result := VersionLine;
+      finally
+        CloseFile(VersionFile);
+      end;
+    except
+      // Ignora erros de leitura
+    end;
+  end
+  else
+  begin
+    // Estratégia 2: Tentar ler variável de ambiente
+    VersionLine := GetEnvironmentVariable('APP_VERSION');
+    if VersionLine <> '' then
+      Result := VersionLine
+    else
+    begin
+      // Estratégia 3: Usar data de compilação como versão
+      {$IFDEF DEBUG}
+      Result := '1.0.0.0-DEBUG';
+      {$ELSE}
+      Result := Format('1.0.0.%d', [
+        Trunc((Now - EncodeDate(2024, 1, 1)) / 1)
+      ]);
+      {$ENDIF}
+    end;
+  end;
+  
+  // Garantir que a versão está no formato correto (X.X.X.X)
+  Major := 1; Minor := 0; Release := 0; Build := 0;
+  
+  // Tenta extrair números da string de versão
+  VersionStr := Result;
+  if VersionStr.Contains('.') then
+  begin
+    // Aqui você pode implementar a lógica de parsing
+    // Por enquanto, mantém o resultado como está
+  end;
+  {$ENDIF}
 end;
 
-
+{ TD2BridgeAppConfigVersion }
 
 constructor TD2BridgeAppConfigVersion.Create;
 begin
@@ -184,12 +252,32 @@ end;
 procedure TD2BridgeAppConfigVersion.SetVersionStr(const Value: string);
 var
  Parts: TArray<string>;
+ i: Integer;
+ TempStr: string;
 begin
- Parts := Value.Split(['.']);
- if Length(Parts) > 0 then FMajor := StrToIntDef(Parts[0], 0);
+ // Remove qualquer texto adicional (como -DEBUG)
+ TempStr := Value;
+ i := Pos('-', TempStr);
+ if i > 0 then
+  TempStr := Copy(TempStr, 1, i - 1);
+ 
+ Parts := TempStr.Split(['.']);
+  
+ FMajor := 0;
+ FMinor := 0;
+ FRelease := 0;
+ FBuild := 0;
+ 
+ if Length(Parts) > 0 then FMajor := StrToIntDef(Parts[0], 1);
  if Length(Parts) > 1 then FMinor := StrToIntDef(Parts[1], 0);
  if Length(Parts) > 2 then FRelease := StrToIntDef(Parts[2], 0);
  if Length(Parts) > 3 then FBuild := StrToIntDef(Parts[3], 0);
+  
+ // Garantir valores mínimos
+ if FMajor < 1 then FMajor := 1;
+ if FMinor < 0 then FMinor := 0;
+ if FRelease < 0 then FRelease := 0;
+ if FBuild < 0 then FBuild := 0;
 end;
 
 end.

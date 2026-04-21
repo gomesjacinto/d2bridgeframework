@@ -35,7 +35,7 @@ unit D2Bridge.HTML;
 interface
 
 uses
-  Classes, Generics.Collections,
+  Classes, Generics.Collections, StrUtils,
   System.UITypes;
 
 type
@@ -270,8 +270,13 @@ end;
 function TD2BridgeHTML.HTMLRender.MakeHTML: TStringList;
 var _Title: String;
     vBackGroundColor: string;
+    LPathCSS: String;
+    LPathJS: String;
 begin
  Result:= TStringList.Create;
+
+ LPathCSS := ReplaceStr( TD2BridgeClass( FD2BridgeHTML.FD2BridgeBaseClass ).D2BridgeManager.Prism.Options.PathCSS, '\', '/' );
+ LPathJS  := ReplaceStr( TD2BridgeClass( FD2BridgeHTML.FD2BridgeBaseClass ).D2BridgeManager.Prism.Options.PathJS, '\', '/' );
 
  _Title:= Title;
  if _Title = '' then
@@ -314,7 +319,8 @@ begin
     //Result.add('<link href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css" rel="stylesheet" type="text/css"/>');
     //Result.add('<link rel="stylesheet" type="text/css" href="css/ui.jqgrid-bootstrap5.css"/>');
     if FD2BridgeHTML.Options.IncluseBootStrap then
-    Result.add('<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>');
+    Result.add('<link rel="stylesheet" type="text/css" href="' + LPathCSS + '/bootstrap.min.css"/>');
+    //Result.add('<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>');
     //Result.add('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">');
     //Result.add('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> ');
     //Result.add('<script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>');
@@ -353,7 +359,8 @@ begin
   Result.add('</div>');
   if FD2BridgeHTML.Options.FIncluseBootStrap then
   begin
-   Result.Add('<script src="js/bootstrap.bundle.min.js"></script>');
+   Result.Add('<script src="' + LPathJS + '/bootstrap.bundle.min.js"></script>');
+//   Result.Add('<script src="js/bootstrap.bundle.min.js"></script>');
   end;
   //Result.add('<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>');
 

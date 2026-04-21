@@ -71,8 +71,8 @@ type
 implementation
 
 uses
-  SysUtils, DB,
-  D2Bridge.Types, D2Bridge.Util,
+  SysUtils, DB, Graphics,
+  D2Bridge.Types, D2Bridge.Util, D2Bridge.Item.VCLObj.Style,
   Prism.Util, Prism.Types;
 
 { TVCLObjTStringGrid }
@@ -187,6 +187,15 @@ begin
    Title:= TStringGrid(FD2BridgeItemVCLObj.Item).{$IFNDEF FMX}Cells[I, 0]{$ELSE}Columns[I].Header{$ENDIF};
    Visible:= {$IFNDEF FMX}True{$ELSE}TStringGrid(FD2BridgeItemVCLObj.Item).Columns[I].Visible{$ENDIF};
    Width:= WidthPPI(TStringGrid(FD2BridgeItemVCLObj.Item).{$IFNDEF FMX}ColWidths[I]{$ELSE}Columns[I].Width{$ENDIF});
+  if (FrameworkItemClass as ID2BridgeFrameworkItemStringGrid).ImportStylesComponents then
+  begin
+{$IFNDEF FMX}
+   if TStringGrid(FD2BridgeItemVCLObj.Item).Font.Color <> DefaultFontColor then
+    FontColor:= TStringGrid(FD2BridgeItemVCLObj.Item).Font.Color;
+   if TStringGrid(FD2BridgeItemVCLObj.Item).Font.Style <> [] then
+    FontStyles:= TStringGrid(FD2BridgeItemVCLObj.Item).Font.Style;
+{$ENDIF}
+  end;
    Editable:= {$IFNDEF FMX}True{$ELSE}TStringGrid(FD2BridgeItemVCLObj.Item).Columns[I].ReadOnly = False{$ENDIF};
 
 {$IFDEF DELPHIX_SYDNEY_UP} // Delphi 10.4 Sydney or Upper
@@ -216,6 +225,20 @@ begin
 //   end;
   end;
  end;
+
+ if (FrameworkItemClass as ID2BridgeFrameworkItemStringGrid).ImportStylesComponents then
+ begin
+{$IFNDEF FMX}
+  if TStringGrid(FD2BridgeItemVCLObj.Item).Font.Size <> DefaultFontSize then
+   (FrameworkItemClass as ID2BridgeFrameworkItemStringGrid).TitleFontSize:= TStringGrid(FD2BridgeItemVCLObj.Item).Font.Size;
+  if TStringGrid(FD2BridgeItemVCLObj.Item).Font.Color <> DefaultFontColor then
+   (FrameworkItemClass as ID2BridgeFrameworkItemStringGrid).TitleFontColor:= TStringGrid(FD2BridgeItemVCLObj.Item).Font.Color;
+  if TStringGrid(FD2BridgeItemVCLObj.Item).Font.Style <> [] then
+   (FrameworkItemClass as ID2BridgeFrameworkItemStringGrid).TitleFontStyles:= TStringGrid(FD2BridgeItemVCLObj.Item).Font.Style;
+  if not IsColor(TStringGrid(FD2BridgeItemVCLObj.Item).FixedColor, [clBtnFace, clDefault]) then
+   (FrameworkItemClass as ID2BridgeFrameworkItemStringGrid).TitleBackgroundColor:= TStringGrid(FD2BridgeItemVCLObj.Item).FixedColor;
+{$ENDIF}
+ end;
 end;
 
 function TVCLObjTStringGrid.VCLClass: TClass;
@@ -225,6 +248,21 @@ end;
 
 procedure TVCLObjTStringGrid.VCLStyle(const VCLObjStyle: ID2BridgeItemVCLObjStyle);
 begin
+ if not (FrameworkItemClass as ID2BridgeFrameworkItemStringGrid).ImportStylesComponents then
+  Exit;
+
+{$IFNDEF FMX}
+ if TStringGrid(FD2BridgeItemVCLObj.Item).Font.Size <> DefaultFontSize then
+  VCLObjStyle.FontSize := TStringGrid(FD2BridgeItemVCLObj.Item).Font.Size;
+
+ if TStringGrid(FD2BridgeItemVCLObj.Item).Font.Color <> DefaultFontColor then
+  VCLObjStyle.FontColor := TStringGrid(FD2BridgeItemVCLObj.Item).Font.Color;
+
+ if not IsColor(TStringGrid(FD2BridgeItemVCLObj.Item).Color, [clWindow, clDefault]) then
+  VCLObjStyle.Color := TStringGrid(FD2BridgeItemVCLObj.Item).Color;
+
+ VCLObjStyle.FontStyles := TStringGrid(FD2BridgeItemVCLObj.Item).Font.Style;
+{$ENDIF}
 
 end;
 

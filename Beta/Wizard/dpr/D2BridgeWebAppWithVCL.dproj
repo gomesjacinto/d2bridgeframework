@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{F9D19490-C8BF-4AC1-AC1A-D1EA65A4792D}</ProjectGuid>
+        <ProjectGuid>{ProjectGUID}</ProjectGuid>
         <MainSource>D2BridgeWebAppWithVCL.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">D2Bridge Web Debug</Config>

@@ -242,6 +242,14 @@ begin
   if PrismControl.VCLComponent = DBGrid3 then
   with PrismControl.AsDBGrid do
   begin
+   // Active Zebra Style and Select Colors.
+   ZebraGrid     := True;
+   ZebraOddColor := clGray;
+   ZebraPairColor:= clSilver;
+
+   // If you want import styles from vcl, active this option.
+   //ImportStylesComponents := True;
+
    //HTML with <a> hhtml element and Button and CallBack
    with Columns.Add do
    begin

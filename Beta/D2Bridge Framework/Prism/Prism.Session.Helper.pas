@@ -214,6 +214,9 @@ procedure TPrismSessionStatusHelper.SetIdleSeconds(ASeconds: integer);
 var
  vTempLastActivity: TDateTime;
 begin
+ if ASeconds <= 0 then
+  FIdle:= false;
+
  vTempLastActivity:= IncSecond(Now, ASeconds * (-1));
  if vTempLastActivity > FLastActivity then
   FLastActivity:= vTempLastActivity;

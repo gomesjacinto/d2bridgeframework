@@ -128,6 +128,8 @@ var
   sSourceWebFMXDPROJFile, sSourceFMXDPROJFile: string;
   sSourceWebFMXDPRFile, sSourceFMXDPRFile: string;
   sSourceWebFMXRESFile, sSourceFMXRESFile: string;
+  ServersFile: string;
+  vServerFilesIdx: Integer;
 {$ENDIF}
 {$IFDEF FPC}
   sSourceFixD2BridgeLazCompile, sSourceFixD2BridgeLazBuild: string;
@@ -142,6 +144,7 @@ var
   sPathBINWEB, sPathBIN: string;
   sPathwwwroot: string;
   sPathWEBDPROJFile, sPathWEBRESFile, sPathWEBICOFile, sPathWizard, sPathUnitBase, sPathUnitServer, sPathDFMServer: string;
+  sPathUnitServiceServer : string;
   sSourceWebVCLDPROJFile, sSourceVCLDPROJFile: string;
   sSourceWebDPRFile, sSourceVCLDPRFile: string;
   sSourceWebRESFile, sSourceVCLRESFile: string;
@@ -154,6 +157,7 @@ var
   sRESTAPIServerUnitAuthFile, sRESTAPIServerUnitPingFile: string;
   sRESTAPIServerUnitAuthClassFile, sRESTAPIServerUnitPingClassFile: string;
   sRESTAPIServerSessionFile: string;
+  G: TGUID;
 begin
   try
    WizardForm.ShowModal;
@@ -267,8 +271,14 @@ begin
 {$ENDIF}
 
 {$IFDEF FPC}
+
+    {$IFDEF MSWINDOWS}
      sSourceFixD2BridgeLazCompile := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazCompile.bat';
      sSourceFixD2BridgeLazBuild := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazBuild.bat';
+    {$ELSE}
+     sSourceFixD2BridgeLazCompile := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazCompile.sh';
+     sSourceFixD2BridgeLazBuild := sPathWizard + PathDelim + 'dpr' + PathDelim + 'LAZARUS' + PathDelim + 'FixD2BridgeLazBuild.sh';
+    {$ENDIF}
 {$ENDIF}
 
      if WizardForm.CheckBox_Create_Project_Folder.Checked then
@@ -449,6 +459,7 @@ begin
        {$ENDREGION}
 
        {$REGION 'Copy Languages Units'}
+       sLanguagesDESTROY.Add('{$IFNDEF D2WindowsService}');
         for I := 0 to Pred(WizardForm.CheckListBox_Languages.Count) do
          if WizardForm.CheckListBox_Languages.Checked[I] then
          begin
@@ -483,6 +494,7 @@ begin
           sFile.SaveToFile(sDestinationPathWeb + PathDelim + 'D2Bridge.Lang.APP.'+WizardForm.CheckListBox_Languages.Items[I]+'.pas');
           sFile.Free;
          end;
+       sLanguagesDESTROY.Add('{$ENDIF}');
        {$ENDREGION}
 
        {$REGION 'Copy D2Bridge.Lang.APP.Core'}
@@ -732,6 +744,17 @@ begin
       sFileContent:= StringReplace(sFileContent, '{D2BridgePath}', IncludeTrailingPathDelimiter(WizardForm.Edit_Path_D2Bridge.Text), [rfIgnoreCase, rfReplaceAll]);
       sFileContent:= StringReplace(sFileContent, '{PathDelim}', PathDelim, [rfIgnoreCase, rfReplaceAll]);
 
+      {$IFDEF MSWINDOWS}
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazBuild}', 'FixD2BridgeLazBuild.bat', [rfIgnoreCase, rfReplaceAll]);
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazCompile}', 'FixD2BridgeLazCompile.bat', [rfIgnoreCase, rfReplaceAll]);
+      {$ELSE}
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazBuild}', 'sh FixD2BridgeLazBuild.sh', [rfIgnoreCase, rfReplaceAll]);
+        sFileContent:= StringReplace(sFileContent, '{FixD2BridgeLazCompile}', 'sh FixD2BridgeLazCompile.sh', [rfIgnoreCase, rfReplaceAll]);
+      {$ENDIF}
+
+        CreateGUID(G);
+        sFileContent:= StringReplace(sFileContent, '{ProjectGUID}', GUIDToString(G), [rfIgnoreCase, rfReplaceAll]);
+
 {$IFDEF FPC}
       if WizardForm.ComboBox_Server_Type.Text = 'Server Console (Recommended)' then
        sFileContent:= StringReplace(sFileContent, '{D2BridgeServerUnit}', 'Unit_D2Bridge_Server_Console.pas', [rfIgnoreCase, rfReplaceAll]);
@@ -752,19 +775,72 @@ begin
 
 
      {$REGION 'WEB dpr'}
+      {$IFDEF DELPHI}
+      CopyFolderFiles(
+          PWideChar(sPathWizard + PathDelim + 'Servers' + PathDelim + 'Service' + PathDelim + '*.*'),
+          sDestinationPathWeb
+      );
+
+      sPathUnitServer := sDestinationPathWeb + PathDelim + 'Unit_D2Bridge_Server_Service.pas';
+      sPathDFMServer  := sDestinationPathWeb + PathDelim + 'Unit_D2Bridge_Server_Service.dfm';
+
+      sFile := TStringStream.Create('', TEncoding.UTF8);
+      try
+        sFile.LoadFromFile(GetRealFilePath(sPathUnitServer));
+        sFileContent := sFile.DataString;
+
+        sFileContent := StringReplace(sFileContent, '{ProjectName}', sProjectName, [rfReplaceAll]);
+
+        sFile.Clear;
+        sFile.WriteString(sFileContent);
+        sFile.SaveToFile(GetRealFilePath(sPathUnitServer));
+      finally
+        sFile.Free;
+      end;
+
+      sFile := TStringStream.Create('', TEncoding.UTF8);
+      try
+        sFile.LoadFromFile(GetRealFilePath(sPathDFMServer));
+        sFileContent := sFile.DataString;
+
+        sFileContent := StringReplace(sFileContent, '{ProjectName}', sProjectName, [rfReplaceAll]);
+
+        sFile.Clear;
+        sFile.WriteString(sFileContent);
+        sFile.SaveToFile(GetRealFilePath(sPathDFMServer));
+      finally
+        sFile.Free;
+      end;
+
+      sPathUnitServiceServer := sDestinationPathWeb + PathDelim + 'Unit_D2Bridge_Server_Core.pas';
+
+      sFile := TStringStream.Create('', TEncoding.UTF8);
+      try
+        sFile.LoadFromFile(GetRealFilePath(sPathUnitServiceServer));
+        sFileContent := sFile.DataString;
+
+        sFileContent := StringReplace(sFileContent, '{ProjectName}', sProjectName, [rfReplaceAll]);
+
+        sFile.Clear;
+        sFile.WriteString(sFileContent);
+        sFile.SaveToFile(GetRealFilePath(sPathUnitServiceServer));
+      finally
+        sFile.Free;
+      end;
+      {$ENDIF}
+
       if sTypeServer = {$IFDEF FPC}tsWebAndLCL{$ELSE}tsWebAndVCL{$ENDIF} then
        {$IFDEF FPC}CopyFile{$ELSE}TFile.Copy{$ENDIF}(sSourceVCLDPRFile, sProjectNameLogical, false)
       else
-{$IFDEF DELPHI}
+      {$IFDEF DELPHI}
       if sTypeServer = tsWebAndFMX then
-       CopyFile(PWideChar(sSourceFMXDPRFile), PWideChar(sProjectNameLogical), false)
+        CopyFile(PWideChar(sSourceFMXDPRFile), PWideChar(sProjectNameLogical), false)
       else
-      if sTypeServer = tsWebFMX then
-       CopyFile(PWideChar(sSourceWebFMXDPRFile), PWideChar(sProjectNameLogical), false)
-      else
-{$ENDIF}
-       {$IFDEF FPC}CopyFile{$ELSE}TFile.Copy{$ENDIF}(sSourceWebDPRFile, sProjectNameLogical, false);
-
+        if sTypeServer = tsWebFMX then
+          CopyFile(PWideChar(sSourceWebFMXDPRFile), PWideChar(sProjectNameLogical), false)
+        else
+      {$ENDIF}
+      {$IFDEF FPC}CopyFile{$ELSE}TFile.Copy{$ENDIF}(sSourceWebDPRFile, sProjectNameLogical, false);
 
       sFile:= TStringStream.Create('', TEncoding.UTF8);
       sFile.LoadFromFile(GetRealFilePath(sProjectNameLogical));
@@ -774,7 +850,7 @@ begin
       begin
        sPathUnitServer:= sDestinationPathWeb + PathDelim + 'Unit_D2Bridge_Server.pas';
        sPathDFMServer:= sDestinationPathWeb + PathDelim + 'Unit_D2Bridge_Server.dfm';
-       sUNITs.Add('  Unit_D2Bridge_Server in ''Unit_D2Bridge_Server.pas'' {Form_D2Bridge_Server},');
+       sUNITs.Add('Unit_D2Bridge_Server in ''Unit_D2Bridge_Server.pas'' {Form_D2Bridge_Server},');
 
        CopyFolderFiles(PWideChar(sPathWizard + PathDelim + 'Servers\Complete\*.*'), sDestinationPathWeb);
 
@@ -798,8 +874,9 @@ begin
       begin
        sPathUnitServer:= sDestinationPathWeb + PathDelim + 'Unit_D2Bridge_Server_Console.pas';
        sPathDFMServer:= '';
-       sUNITs.Add('  Unit_D2Bridge_Server_Console in ''Unit_D2Bridge_Server_Console.pas'',');
-
+       sUNITs.Add('{$IFNDEF D2WindowsService}');
+       sUNITs.Add('Unit_D2Bridge_Server_Console in ''Unit_D2Bridge_Server_Console.pas'',');
+       sUNITs.Add('{$ENDIF}');
 {$IFDEF FPC}
        CopyFolderFiles(sPathWizard + PathDelim + 'Servers' + PathDelim + 'Console' + PathDelim + '*.*', sDestinationPathWeb);
 {$ELSE}
@@ -842,46 +919,96 @@ begin
 
 
      {$REGION 'Unit Server Properties'}
-      sFile:= TStringStream.Create('', TEncoding.UTF8);
-      sFile.LoadFromFile(GetRealFilePath(sPathUnitServer));
-      sFileContent:= sFile.DataString;
-
-      //----- PrimaryForm / Class
-      sFileContent := StringReplace(sFileContent, '{PrimaryFormClass}', sClassPrimaryForm, [rfIgnoreCase, rfReplaceAll]);
-      sFileContent := StringReplace(sFileContent, '{PrimaryFormUnit}', sUnitPrimaryForm, [rfIgnoreCase, rfReplaceAll]);
-
-      //----- SSL
-      if WizardForm.ComboBox_UseSSL.Text = 'Yes' then
+     {$IFDEF DELPHI}
+      for vServerFilesIdx := 0 to 1 do
       begin
-       sFileContent := StringReplace(sFileContent, '//D2BridgeServerController.Prism.Options.SSL:= true;', 'D2BridgeServerController.Prism.Options.SSL:= true;', [rfIgnoreCase]);
+        if vServerFilesIdx = 0 then ServersFile := sPathUnitServer
+                               else ServersFile := sPathUnitServiceServer;
+        sFile:= TStringStream.Create('', TEncoding.UTF8);
+        sFile.LoadFromFile(GetRealFilePath(ServersFile));
+        sFileContent:= sFile.DataString;
+
+        //----- PrimaryForm / Class
+        sFileContent := StringReplace(sFileContent, '{PrimaryFormClass}', sClassPrimaryForm, [rfIgnoreCase, rfReplaceAll]);
+        sFileContent := StringReplace(sFileContent, '{PrimaryFormUnit}', sUnitPrimaryForm, [rfIgnoreCase, rfReplaceAll]);
+
+        //----- SSL
+        if WizardForm.ComboBox_UseSSL.Text = 'Yes' then
+        begin
+         sFileContent := StringReplace(sFileContent, '//D2BridgeServerController.Prism.Options.SSL:= true;', 'D2BridgeServerController.Prism.Options.SSL:= true;', [rfIgnoreCase]);
+        end;
+        sFileContent := StringReplace(sFileContent, '{Certificate}', WizardForm.Edit_SSL_Certificate.Text, [rfIgnoreCase]);
+        sFileContent := StringReplace(sFileContent, '{Certificate_Key}', WizardForm.Edit_SSL_Key.Text, [rfIgnoreCase]);
+        sFileContent := StringReplace(sFileContent, '{Certificate Intermediate}', WizardForm.Edit_SSL_Intermediate.Text, [rfIgnoreCase]);
+        sFileContent := StringReplace(sFileContent, '{ProjectName}', sProjectName, [rfIgnoreCase, rfReplaceAll]);
+
+        //----- Server Port
+        sFileContent := StringReplace(sFileContent, '{Server_Port}', WizardForm.Edit_Server_Port.Text, [rfIgnoreCase]);
+
+        //----- Server Name
+        sFileContent := StringReplace(sFileContent, '{Server_Name}', WizardForm.Edit_Server_Name.Text, [rfIgnoreCase]);
+
+        //----- Path JS
+        sFileContent := StringReplace(sFileContent, '{PathJS}', WizardForm.Edit_Path_JS.Text, [rfIgnoreCase]);
+        //----- Path CSS
+        sFileContent := StringReplace(sFileContent, '{PathCSS}', WizardForm.Edit_Path_CSS.Text, [rfIgnoreCase]);
+
+        //----- Language
+        sFileContent := StringReplace(sFileContent, '{Languages}', '[' + sLanguagesSET.CommaText + ']', [rfIgnoreCase, rfReplaceAll]);
+
+        //----- Options jQuery
+        sFileContent := StringReplace(sFileContent, '//D2BridgeServerController.Prism.Options.IncludeJQuery:= true;', 'D2BridgeServerController.Prism.Options.IncludeJQuery:= true;', [rfIgnoreCase]);
+
+        sFile.Clear;
+        sFile.WriteString(sFileContent);
+        sFile.SaveToFile(GetRealFilePath(ServersFile));
+        sFile.Free;
       end;
-      sFileContent := StringReplace(sFileContent, '{Certificate}', WizardForm.Edit_SSL_Certificate.Text, [rfIgnoreCase]);
-      sFileContent := StringReplace(sFileContent, '{Certificate_Key}', WizardForm.Edit_SSL_Key.Text, [rfIgnoreCase]);
-      sFileContent := StringReplace(sFileContent, '{Certificate Intermediate}', WizardForm.Edit_SSL_Intermediate.Text, [rfIgnoreCase]);
-      sFileContent := StringReplace(sFileContent, '{ProjectName}', sProjectName, [rfIgnoreCase, rfReplaceAll]);
+     {$ELSE}
+     sFile:= TStringStream.Create('', TEncoding.UTF8);
+     sFile.LoadFromFile(GetRealFilePath(sPathUnitServer));
+     sFileContent:= sFile.DataString;
 
-      //----- Server Port
-      sFileContent := StringReplace(sFileContent, '{Server_Port}', WizardForm.Edit_Server_Port.Text, [rfIgnoreCase]);
+     //----- PrimaryForm / Class
+     sFileContent := StringReplace(sFileContent, '{PrimaryFormClass}', sClassPrimaryForm, [rfIgnoreCase, rfReplaceAll]);
+     sFileContent := StringReplace(sFileContent, '{PrimaryFormUnit}', sUnitPrimaryForm, [rfIgnoreCase, rfReplaceAll]);
 
-      //----- Server Name
-      sFileContent := StringReplace(sFileContent, '{Server_Name}', WizardForm.Edit_Server_Name.Text, [rfIgnoreCase]);
+     //----- SSL
+     if WizardForm.ComboBox_UseSSL.Text = 'Yes' then
+     begin
+      sFileContent := StringReplace(sFileContent, '//D2BridgeServerController.Prism.Options.SSL:= true;', 'D2BridgeServerController.Prism.Options.SSL:= true;', [rfIgnoreCase]);
+     end;
+     sFileContent := StringReplace(sFileContent, '{Certificate}', WizardForm.Edit_SSL_Certificate.Text, [rfIgnoreCase]);
+     sFileContent := StringReplace(sFileContent, '{Certificate_Key}', WizardForm.Edit_SSL_Key.Text, [rfIgnoreCase]);
+     sFileContent := StringReplace(sFileContent, '{Certificate Intermediate}', WizardForm.Edit_SSL_Intermediate.Text, [rfIgnoreCase]);
+     sFileContent := StringReplace(sFileContent, '{ProjectName}', sProjectName, [rfIgnoreCase, rfReplaceAll]);
 
-      //----- Path JS
-      sFileContent := StringReplace(sFileContent, '{PathJS}', WizardForm.Edit_Path_JS.Text, [rfIgnoreCase]);
-      //----- Path CSS
-      sFileContent := StringReplace(sFileContent, '{PathCSS}', WizardForm.Edit_Path_CSS.Text, [rfIgnoreCase]);
+     //----- Server Port
+     sFileContent := StringReplace(sFileContent, '{Server_Port}', WizardForm.Edit_Server_Port.Text, [rfIgnoreCase]);
 
-      //----- Language
-      sFileContent := StringReplace(sFileContent, '{Languages}', '[' + sLanguagesSET.CommaText + ']', [rfIgnoreCase, rfReplaceAll]);
+     //----- Server Name
+     sFileContent := StringReplace(sFileContent, '{Server_Name}', WizardForm.Edit_Server_Name.Text, [rfIgnoreCase]);
 
-      //----- Options jQuery
-      sFileContent := StringReplace(sFileContent, '//D2BridgeServerController.Prism.Options.IncludeJQuery:= true;', 'D2BridgeServerController.Prism.Options.IncludeJQuery:= true;', [rfIgnoreCase]);
+     //----- Path JS
+     sFileContent := StringReplace(sFileContent, '{PathJS}', WizardForm.Edit_Path_JS.Text, [rfIgnoreCase]);
+     //----- Path CSS
+     sFileContent := StringReplace(sFileContent, '{PathCSS}', WizardForm.Edit_Path_CSS.Text, [rfIgnoreCase]);
 
-      sFile.Clear;
-      sFile.WriteString(sFileContent);
-      sFile.SaveToFile(GetRealFilePath(sPathUnitServer));
-      sFile.Free;
+     //----- Language
+     sFileContent := StringReplace(sFileContent, '{Languages}', '[' + sLanguagesSET.CommaText + ']', [rfIgnoreCase, rfReplaceAll]);
+
+     //----- Options jQuery
+     sFileContent := StringReplace(sFileContent, '//D2BridgeServerController.Prism.Options.IncludeJQuery:= true;', 'D2BridgeServerController.Prism.Options.IncludeJQuery:= true;', [rfIgnoreCase]);
+
+     sFile.Clear;
+     sFile.WriteString(sFileContent);
+     sFile.SaveToFile(GetRealFilePath(sPathUnitServer));
+     sFile.Free;
+     {$ENDIF}
      {$ENDREGION}
+
+
+
 
 
      {$REGION 'Form Server Properties'}
@@ -973,3 +1100,4 @@ begin
 end;
 
 end.
+

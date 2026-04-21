@@ -12,10 +12,12 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  PixelsPerInch = 96
   TextHeight = 15
   object Panel_Container: TPanel
     Left = 0
@@ -615,7 +617,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
         Top = 98
         Width = 484
         Height = 342
-        ActivePage = TabSheet5
+        ActivePage = TabSheet1
         Align = alClient
         TabOrder = 3
         object TabSheet5: TTabSheet
@@ -637,7 +639,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label24: TLabel
               Left = 0
               Top = 0
-              Width = 217
+              Width = 218
               Height = 13
               Caption = 'Select Path from D2Bridge Framework files'
               Font.Charset = DEFAULT_CHARSET
@@ -850,7 +852,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label15: TLabel
               Left = 0
               Top = 153
-              Width = 60
+              Width = 59
               Height = 13
               Caption = 'Server Type:'
               Font.Charset = DEFAULT_CHARSET
@@ -863,7 +865,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label30: TLabel
               Left = 0
               Top = 229
-              Width = 81
+              Width = 80
               Height = 13
               Caption = 'REST API Server:'
               Font.Charset = DEFAULT_CHARSET
@@ -1069,7 +1071,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label9: TLabel
               Left = 0
               Top = 4
-              Width = 49
+              Width = 48
               Height = 13
               Caption = 'Template:'
               Font.Charset = DEFAULT_CHARSET
@@ -1082,7 +1084,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label19: TLabel
               Left = 0
               Top = 245
-              Width = 147
+              Width = 145
               Height = 13
               Caption = 'Master Page HTML Template:'
               Font.Charset = DEFAULT_CHARSET
@@ -1095,7 +1097,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label20: TLabel
               Left = 0
               Top = 274
-              Width = 109
+              Width = 107
               Height = 13
               Caption = 'Page HTML Template:'
               Font.Charset = DEFAULT_CHARSET
@@ -2148,7 +2150,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label17: TLabel
               Left = 0
               Top = 37
-              Width = 95
+              Width = 96
               Height = 13
               Caption = 'Include BootStrap:'
               Font.Charset = DEFAULT_CHARSET
@@ -2187,7 +2189,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
             object Label3: TLabel
               Left = 0
               Top = 132
-              Width = 127
+              Width = 126
               Height = 13
               Caption = 'Third Party Components:'
               Font.Charset = DEFAULT_CHARSET
@@ -2886,7 +2888,7 @@ object D2BridgeConfigNewProject: TD2BridgeConfigNewProject
           object Label_Status_Template: TLabel
             Left = 57
             Top = 10
-            Width = 46
+            Width = 45
             Height = 13
             Caption = 'Template'
             Font.Charset = DEFAULT_CHARSET

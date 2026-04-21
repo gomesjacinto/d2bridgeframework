@@ -45,7 +45,7 @@ uses
 {$IFDEF MSWINDOWS}
   Windows,
 {$ENDIF}
-  D2Bridge.Lang.Interfaces, D2Bridge.Lang.Term.BaseClass, Prism.JSONHelper, Prism.Types;
+  D2Bridge.DebugUtils, D2Bridge.Lang.Interfaces, D2Bridge.Lang.Term.BaseClass, Prism.JSONHelper, Prism.Types;
 
 type
  TD2BridgeLangBaseClass = class(TInterfacedPersistent, ID2BridgeLangBaseClass)

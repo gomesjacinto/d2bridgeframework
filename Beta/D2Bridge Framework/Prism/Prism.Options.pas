@@ -35,7 +35,7 @@ unit Prism.Options;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, D2Bridge.DebugUtils,
 {$IFDEF HAS_UNIT_SYSTEM_IOUTILS}
   System.IOUtils,
 {$ENDIF}
@@ -612,6 +612,9 @@ end;
 procedure TPrismOptions.SetPathLogException(const Value: string);
 begin
   FPathLogException:= Value;
+
+  if (FPathLogException <> '') and (ExtractFileDrive(FPathLogException) = '') then
+    FPathLogException := ExpandFileName(ExtractFilePath(ParamStr(0)) + FPathLogException);
 
   try
 {$IFDEF HAS_UNIT_SYSTEM_IOUTILS}

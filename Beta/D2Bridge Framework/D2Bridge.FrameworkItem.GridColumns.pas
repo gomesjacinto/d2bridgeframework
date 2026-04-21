@@ -36,6 +36,7 @@ interface
 
 
 uses
+  Graphics,
   Classes, Generics.Collections, D2Bridge.JSON,
   D2Bridge.Interfaces, D2Bridge.Types,
   Prism.Types;
@@ -68,6 +69,10 @@ type
    FAlignment: TD2BridgeColumnsAlignment;
    FDataFieldType: TPrismFieldType;
    FSelectItems: TJSONObject;
+  FFontColor: TColor;
+  FFontStyles: TFontStyles;
+  FTitleFontColor: TColor;
+  FTitleFontStyles: TFontStyles;
    function GetDataField: string;
    Procedure SetDataField(AFieldName: String);
    function GetTitle: string;
@@ -82,6 +87,14 @@ type
    Procedure SetEditable(AValue: Boolean);
    function GetDataFieldType: TPrismFieldType;
    procedure SetDataFieldType(const Value: TPrismFieldType);
+  function GetFontColor: TColor;
+  procedure SetFontColor(Value: TColor);
+  function GetFontStyles: TFontStyles;
+  procedure SetFontStyles(Value: TFontStyles);
+  function GetTitleFontColor: TColor;
+  procedure SetTitleFontColor(Value: TColor);
+  function GetTitleFontStyles: TFontStyles;
+  procedure SetTitleFontStyles(Value: TFontStyles);
   public
    constructor Create;
    destructor Destroy; override;
@@ -94,6 +107,10 @@ type
    property Visible: Boolean read GetVisible write SetVisible;
    property Width: Integer read GetWidth write SetWidth;
    property Alignment: TD2BridgeColumnsAlignment read GetAlignment write SetAlignment;
+   property FontColor: TColor read GetFontColor write SetFontColor;
+   property FontStyles: TFontStyles read GetFontStyles write SetFontStyles;
+   property TitleFontColor: TColor read GetTitleFontColor write SetTitleFontColor;
+   property TitleFontStyles: TFontStyles read GetTitleFontStyles write SetTitleFontStyles;
  end;
 
 implementation
@@ -158,6 +175,10 @@ begin
  FAlignment:= D2BridgeAlignColumnsLeft;
  FEditable:= false;
  FDataFieldType:= PrismFieldTypeString;
+ FFontColor:= clNone;
+ FFontStyles:= [];
+ FTitleFontColor:= clNone;
+ FTitleFontStyles:= [];
  FSelectItems:= TJSONObject.Create;
 end;
 
@@ -189,9 +210,29 @@ begin
  Result:= FEditable;
 end;
 
+function TD2BridgeFrameworkItemGridColumn.GetFontColor: TColor;
+begin
+ Result:= FFontColor;
+end;
+
+function TD2BridgeFrameworkItemGridColumn.GetFontStyles: TFontStyles;
+begin
+ Result:= FFontStyles;
+end;
+
 function TD2BridgeFrameworkItemGridColumn.GetTitle: string;
 begin
  Result:= FTitle;
+end;
+
+function TD2BridgeFrameworkItemGridColumn.GetTitleFontColor: TColor;
+begin
+ Result:= FTitleFontColor;
+end;
+
+function TD2BridgeFrameworkItemGridColumn.GetTitleFontStyles: TFontStyles;
+begin
+ Result:= FTitleFontStyles;
 end;
 
 function TD2BridgeFrameworkItemGridColumn.GetVisible: Boolean;
@@ -229,9 +270,29 @@ begin
  FEditable:= AValue;
 end;
 
+procedure TD2BridgeFrameworkItemGridColumn.SetFontColor(Value: TColor);
+begin
+ FFontColor:= Value;
+end;
+
+procedure TD2BridgeFrameworkItemGridColumn.SetFontStyles(Value: TFontStyles);
+begin
+ FFontStyles:= Value;
+end;
+
 procedure TD2BridgeFrameworkItemGridColumn.SetTitle(ATitle: String);
 begin
  FTitle:= ATitle;
+end;
+
+procedure TD2BridgeFrameworkItemGridColumn.SetTitleFontColor(Value: TColor);
+begin
+ FTitleFontColor:= Value;
+end;
+
+procedure TD2BridgeFrameworkItemGridColumn.SetTitleFontStyles(Value: TFontStyles);
+begin
+ FTitleFontStyles:= Value;
 end;
 
 procedure TD2BridgeFrameworkItemGridColumn.SetVisible(AVisible: Boolean);

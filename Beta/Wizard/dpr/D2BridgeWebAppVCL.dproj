@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{F9D19490-C8BF-4AC1-AC1A-D1EA65A4792D}</ProjectGuid>
+        <ProjectGuid>{ProjectGUID}</ProjectGuid>
         <MainSource>D2BridgeWebAppVCL.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
@@ -48,6 +48,11 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='D2Docker Deploy' or '$(Cfg_3)'!=''">
         <Cfg_3>true</Cfg_3>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Windows service' or '$(Cfg_4)'!=''">
+        <Cfg_4>true</Cfg_4>
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
@@ -115,7 +120,14 @@
         <DCC_ExeOutput>.\Web</DCC_ExeOutput>				
         <AppType>Library</AppType>
         <OutputExt>d2d</OutputExt>
-				<DCC_LargeAddressAware>true</DCC_LargeAddressAware>
+		<DCC_LargeAddressAware>true</DCC_LargeAddressAware>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_4)'!=''">
+        <DCC_Define>RELEASE;D2Bridge;D2WindowsService;$(DCC_Define)</DCC_Define>
+        <DCC_BplOutput>.\Web</DCC_BplOutput>
+        <DCC_ExeOutput>.\Web</DCC_ExeOutput>				
+        <AppType>Library</AppType>
+		<DCC_LargeAddressAware>true</DCC_LargeAddressAware>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -147,6 +159,10 @@
         </BuildConfiguration>
         <BuildConfiguration Include="D2Docker Deploy">
             <Key>Cfg_3</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
+        <BuildConfiguration Include="Windows service">
+            <Key>Cfg_4</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>
     </ItemGroup>

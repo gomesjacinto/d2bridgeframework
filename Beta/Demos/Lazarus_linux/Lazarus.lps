@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <Version Value="12"/>
+    <BuildModes Active="D2Bridge Web Debug"/>
+    <Units>
+      <Unit>
+        <Filename Value="Lazarus.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="D2BridgeWebAppWithLCL"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../D2Bridge Framework/D2Bridge.ServerControllerBase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="D2BridgeServerControllerBase"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="26" Y="4"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../../D2Bridge Framework/Prism/Prism.SessionBase.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PrismSessionBase"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Lazarus_Session.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LazarusSession"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="LazarusWebApp.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="LazarusWebAppGlobal"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Unit_D2Bridge_Server_Console.pas"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="447"/>
+        <CursorPos X="61" Y="454"/>
+        <UsageCount Value="37"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="UnitMenu.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormMenu"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Unit_Login.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form_Login"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="55"/>
+        <CursorPos X="38" Y="75"/>
+        <UsageCount Value="37"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitcontrols.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormControls"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitdbgrid.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormDBGrid"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitDBGrid"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="D2BridgeFormTemplate.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitdbgridedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormDBGridEdit"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitDBGridEdit"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitstringgrid.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormStringGrid"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitStringGrid"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitqrcode.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormQRCode"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitQRCode"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitcardgriddatamodel.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormCardGridDataModel"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitCardGridDataModel"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitkanban.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormKanban"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitKanban"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitauth.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormAuth"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitAuth"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="33"/>
+        <CursorPos X="15" Y="44"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitqrcodereader.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormQRCodeReader"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="unitQRCodeReader"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitcamera.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormCamera"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UnitCamera"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitmarkdowneditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormMarkDownEditor"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UnitMarkDownEditor"/>
+        <UsageCount Value="37"/>
+      </Unit>
+      <Unit>
+        <Filename Value="unitwysiwygeditor.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormWYSIWYGEditor"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UnitWYSIWYGEditor"/>
+        <UsageCount Value="37"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="4">
+      <Position>
+        <Filename Value="Unit_D2Bridge_Server_Console.pas"/>
+        <Caret Line="81" Column="16" TopLine="70"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="10" Column="3"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_D2Bridge_Server_Console.pas"/>
+        <Caret Line="73" Column="36" TopLine="72"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="170" Column="28" TopLine="163"/>
+      </Position>
+      <Position>
+        <Filename Value="Unit_Login.pas"/>
+        <Caret Line="12" Column="54"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

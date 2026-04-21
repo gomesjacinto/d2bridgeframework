@@ -190,7 +190,7 @@ uses
   D2Bridge.Item.HTML.Card.Grid, D2Bridge.Item.HTML.Card.Grid.DataModel,
   D2Bridge.Item.HTML.PanelGroup, D2Bridge.Item.HTML.Tabs,
   D2Bridge.Item.HTML.Accordion, D2Bridge.Item.HTML.Popup, D2Bridge.Item.HTML.Upload,
-  D2Bridge.Item.HTMLelement, D2Bridge.Item.HTML.Link, D2Bridge.Item.HTML.Carousel, D2Bridge.Item.HTML.QRCode,
+  D2Bridge.Item.HTMLElement, D2Bridge.Item.HTML.Link, D2Bridge.Item.HTML.Carousel, D2Bridge.Item.HTML.QRCode,
   D2Bridge.Item.HTML.MainMenu, D2Bridge.Item.HTML.SideMenu, D2Bridge.Item.HTML.Image, D2Bridge.Item.HTML.DBImage,
   D2Bridge.Item.HTML.Kanban, D2Bridge.Item.HTML.Editor.MarkDown, D2Bridge.Item.HTML.Editor.WYSIWYG,
   D2Bridge.Item.HTML.Camera, D2Bridge.Item.HTML.QRCodeReader,

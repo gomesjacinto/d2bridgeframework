@@ -1,0 +1,18 @@
+#!/bin/bash
+BASE="lib/x86_64-linux/Debug/Web"
+
+rm -f "$BASE/D2Bridge.ServerControllerBase.o"
+rm -f "$BASE/D2Bridge.ServerControllerBase.ppu"
+rm -f "$BASE/D2Bridge.ServerControllerBase.lfm"
+rm -f "$BASE/D2Bridge.API.D2Docker.Comm.o"
+rm -f "$BASE/D2Bridge.API.D2Docker.Comm.ppu"
+rm -f "$BASE/D2Bridge.API.D2Docker.Comm.lfm"
+rm -f "$BASE/Prism.Server.HTML.o"
+rm -f "$BASE/Prism.Server.HTML.ppu"
+rm -f "$BASE/Prism.Server.HTML.lfm"
+rm -f "$BASE/Prism.Server.Functions.o"
+rm -f "$BASE/Prism.Server.Functions.ppu"
+rm -f "$BASE/Prism.Server.Functions.lfm"
+rm -f "$BASE/Prism.BaseClass.o"
+rm -f "$BASE/Prism.BaseClass.ppu"
+rm -f "$BASE/Prism.BaseClass.lfm"
