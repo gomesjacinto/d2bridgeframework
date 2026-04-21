@@ -48,6 +48,10 @@ type
     FLogFile: TextFile;
     FCriticalSection: TCriticalSection;
     FFileName: string;
+    FIsDaily: Boolean;
+    FLogDir: string;
+    FCurrentLogDate: TDate;
+    procedure EnsureDailyFile;
   public
     constructor Create(const FileName: string; const AAppendIfExists: Boolean = False);
     destructor Destroy; override;
@@ -63,9 +67,38 @@ Uses
 
 { TPrismLog }
 
+procedure TPrismLog.EnsureDailyFile;
+var
+  NewDate: TDate;
+  NewFileName: string;
+begin
+  if not FIsDaily then Exit;
+  NewDate := Trunc(Now);
+  if NewDate = FCurrentLogDate then Exit;
+
+  // Date changed - close current file, open new daily file
+  if FileExists(FFileName) then
+    CloseFile(FLogFile);
+
+  FCurrentLogDate := NewDate;
+  NewFileName := FLogDir + FormatDateTime('yyyy_mm_dd', NewDate) + '.txt';
+  FFileName := NewFileName;
+
+  AssignFile(FLogFile, FFileName);
+  Rewrite(FLogFile);
+  WriteLn(FLogFile, 'D2Bridge Framework');
+  WriteLn(FLogFile, '');
+  WriteLn(FLogFile, 'LOG Started in ' + DateTimeToStr(Now));
+  WriteLn(FLogFile, '');
+  Flush(FLogFile);
+end;
+
 constructor TPrismLog.Create(const FileName: string; const AAppendIfExists: Boolean = False);
 begin
  FFileName:= FileName;
+ FIsDaily := AAppendIfExists;
+ FLogDir := IncludeTrailingPathDelimiter(ExtractFileDir(FileName));
+ FCurrentLogDate := Trunc(Now);
 
  if DirectoryExists(ExtractFileDir(FileName)) then
  begin
@@ -115,10 +148,11 @@ procedure TPrismLog.Log(const SessionIdenty, ErrorForm, ErrorObject, ErrorEvent,
 var
  vMsg: string;
 begin
- if FileExists(FFileName) then
+ if FileExists(FFileName) or FIsDaily then
  begin
   FCriticalSection.Enter;
   try
+   EnsureDailyFile;
     vMsg:= DateTimeToStr(Now);
 
     if SessionIdenty <> '' then
@@ -152,10 +186,11 @@ procedure TPrismLog.LogAccess(const AIP, AUserAgent, ASessionUser, ASessionIdent
 var
  vMsg: string;
 begin
- if FileExists(FFileName) then
+ if FileExists(FFileName) or FIsDaily then
  begin
   FCriticalSection.Enter;
   try
+   EnsureDailyFile;
    vMsg:= DateTimeToStr(Now);
 
    vMsg:= vMsg + ' | New Access';
@@ -188,10 +223,11 @@ procedure TPrismLog.LogSecurity(const AEvent: TSecurityEvent; const AIP, AUserAg
 var
  vMsg: string;
 begin
- if FileExists(FFileName) then
+ if FileExists(FFileName) or FIsDaily then
  begin
   FCriticalSection.Enter;
   try
+   EnsureDailyFile;
    vMsg:= DateTimeToStr(Now);
 
    case AEvent of
