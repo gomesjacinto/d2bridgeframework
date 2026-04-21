@@ -72,27 +72,19 @@ Uses
 procedure TPrismLog.EnsureDailyFile;
 var
   NewDate: TDate;
-  NewFileName: string;
 begin
   if not FIsDaily then Exit;
   NewDate := Trunc(Now);
   if NewDate = FCurrentLogDate then Exit;
 
-  // Date changed - close current file, open new daily file
-  if FileExists(FFileName) then
-    CloseFile(FLogFile);
-
+  // Date changed - switch to new daily file (AppendText creates it on first write)
   FCurrentLogDate := NewDate;
-  NewFileName := FLogDir + FormatDateTime('yyyy_mm_dd', NewDate) + '.txt';
-  FFileName := NewFileName;
+  FFileName := FLogDir + FormatDateTime('yyyy_mm_dd', NewDate) + '.txt';
 
-  AssignFile(FLogFile, FFileName);
-  Rewrite(FLogFile);
-  WriteLn(FLogFile, 'D2Bridge Framework');
-  WriteLn(FLogFile, '');
-  WriteLn(FLogFile, 'LOG Started in ' + DateTimeToStr(Now));
-  WriteLn(FLogFile, '');
-  Flush(FLogFile);
+  AppendText('D2Bridge Framework');
+  AppendText('');
+  AppendText('LOG Started in ' + DateTimeToStr(Now));
+  AppendText('');
 end;
 
 constructor TPrismLog.Create(const FileName: string; const AAppendIfExists: Boolean = False);
@@ -208,10 +200,11 @@ procedure TPrismLog.LogDiagnostic(const ACategory, AMessage: string);
 var
   vMsg: string;
 begin
-  if FileExists(FFileName) then
+  if FileExists(FFileName) or FIsDaily then
   begin
     FCriticalSection.Enter;
     try
+      EnsureDailyFile;
       vMsg := DateTimeToStr(Now) + ' | Diagnostic = ' + ACategory;
 
       if AMessage <> '' then
