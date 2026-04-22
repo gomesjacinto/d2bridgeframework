@@ -56,6 +56,7 @@ type
     FFrameworkForm: ID2BridgeFrameworkForm;
     FTemplateMasterHTMLFile: string;
     FTemplatePageHTMLFile: string;
+    FTemplatePageJSFile: string;
 
     FButton: ID2BridgeFrameworkItemButton;
     FEdit: ID2BridgeFrameworkItemEdit;
@@ -97,6 +98,8 @@ type
     procedure SetTemplatePageHTMLFile(AFilePageTemplate: string);
     function GetTemplateMasterHTMLFile: string;
     function GetTemplatePageHTMLFile: string;
+    procedure SetTemplatePageJSFile(const Value: string);
+    function GetTemplatePageJSFile: string;
 
     procedure AddFormByClass(FormClass: TClass; AOwner: TComponent);
 
@@ -137,6 +140,7 @@ type
     property TemplateMasterHTMLFile: string read GetTemplateMasterHTMLFile write SetTemplateMasterHTMLFile;
     property TemplatePageHTMLFile: string read GetTemplatePageHTMLFile write SetTemplatePageHTMLFile;
     property BaseClass: TD2BridgeClass read FBaseClass;
+    property TemplatePageJSFile: string read GetTemplatePageJSFile write SetTemplatePageJSFile;
 
     property Prism: IPrismBaseClass read GetPrism;
  end;
@@ -175,6 +179,8 @@ begin
   (FFrameworkForm as TPrismForm).TemplateMasterHTMLFile := FTemplateMasterHTMLFile;
   if FTemplatePageHTMLFile <> '' then
   (FFrameworkForm as TPrismForm).TemplatePageHTMLFile := FTemplatePageHTMLFile;
+  if FTemplatePageJSFile <> '' then
+  (FFrameworkForm as TPrismForm).TemplatePageJSFile := FTemplatePageJSFile;
  end;
 end;
 
@@ -223,6 +229,7 @@ begin
 
  FTemplateMasterHTMLFile:= '';
  FTemplatePageHTMLFile:= '';
+ FTemplatePageJSFile := '';
 end;
 
 procedure TD2BridgePrismFramework.CreateForm(AOwner: TComponent);
@@ -445,6 +452,11 @@ begin
  Result:= FTemplatePageHTMLFile;
 end;
 
+function TD2BridgePrismFramework.GetTemplatePageJSFile: string;
+begin
+  Result := FTemplatePageJSFile;
+end;
+
 procedure TD2BridgePrismFramework.HideLoader;
 begin
 
@@ -492,16 +504,25 @@ begin
  FFrameworkForm.SetBaseClass(BaseClass);
 end;
 
-procedure TD2BridgePrismFramework.SetTemplateMasterHTMLFile(
-  AFileMasterTemplate: string);
+procedure TD2BridgePrismFramework.SetTemplateMasterHTMLFile(AFileMasterTemplate: string);
 begin
- FTemplateMasterHTMLFile:= AFileMasterTemplate;
+  FTemplateMasterHTMLFile:= AFileMasterTemplate;
+  if Assigned(FFrameworkForm) then
+   (FFrameworkForm as TPrismForm).TemplateMasterHTMLFile := AFileMasterTemplate;
 end;
 
 procedure TD2BridgePrismFramework.SetTemplatePageHTMLFile(
   AFilePageTemplate: string);
 begin
  FTemplatePageHTMLFile:= AFilePageTemplate;
+end;
+
+procedure TD2BridgePrismFramework.SetTemplatePageJSFile(const Value: string);
+begin
+  FTemplatePageJSFile := Value;
+  // Propaga para o form se já estiver criado
+  if Assigned(FFrameworkForm) then
+    (FFrameworkForm as TPrismForm).TemplatePageJSFile := Value;
 end;
 
 procedure TD2BridgePrismFramework.ShowLoader;

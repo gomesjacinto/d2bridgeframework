@@ -399,6 +399,7 @@ var
  vRequest: TPrismHTTPRequest;
  vResponse: TPrismHTTPResponse;
  vSession: TPrismSession;
+ JSText: string;
 begin
  HTMLText:= '';
  HTMLBodyText:= '';
@@ -535,6 +536,29 @@ begin
 
   //Processa os Includes
   ProcessHTMLHeaderIncludes(vRequest, HTMLText, vSession);
+
+  // Processa TemplatePageJSFile se configurado
+  if (vSession.ActiveForm.TemplatePageJSFile <> '') and
+     (FileExists('wwwroot' + PathDelim + vSession.ActiveForm.TemplatePageJSFile)) then
+  begin
+    HTMLFile := TStringStream.Create('', TEncoding.UTF8);
+    HTMLFile.LoadFromFile('wwwroot' + PathDelim + vSession.ActiveForm.TemplatePageJSFile);
+    JSText := HTMLFile.DataString;
+    HTMLFile.Free;
+
+    // Aplica os mesmos processamentos do HTML
+    vSession.ActiveForm.ProcessTagHTML(JSText);
+    vSession.ActiveForm.ProcessCallBackTagHTML(JSText);
+    vSession.ActiveForm.ProcessTagTranslate(JSText);
+
+    // Injeta como script inline antes do body
+    HTMLText := StringReplace(HTMLText, '$_prismbody',
+      '<script type="text/javascript">' + sLineBreak +
+      JSText + sLineBreak +
+      '</script>' + sLineBreak +
+      '$_prismbody',
+      [rfIgnoreCase]);
+  end;
 
   //Process Body
   ProcessHTMLBodyIncludes(vRequest, HTMLText, vSession);

@@ -1677,6 +1677,8 @@ type
    function GetOnUpload: TOnUpload;
    procedure SetOnUpload(const Value: TOnUpload);
    function PrismOptions: IPrismOptions;
+   procedure SetTemplatePageJSFile(const Value: string);
+   function GetTemplatePageJSFile: string;
 
    function CallBacks: IPrismFormCallBacks;
 
@@ -1729,6 +1731,7 @@ type
    property OnShowPopup: TOnPopup read GetOnShowPopup write SetOnShowPopup;
    property OnClosePopup: TOnPopup read GetOnClosePopup write SetOnClosePopup;
    property OnUpload: TOnUpload read GetOnUpload write SetOnUpload;
+   property TemplatePageJSFile: string read GetTemplatePageJSFile write SetTemplatePageJSFile;
  end;
 
 

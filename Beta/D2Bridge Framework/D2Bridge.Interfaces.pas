@@ -868,6 +868,9 @@ end;
     function GetTemplateMasterHTMLFile: string;
     function GetTemplatePageHTMLFile: string;
 
+    procedure SetTemplatePageJSFile(const Value: string);
+    function GetTemplatePageJSFile: string;
+
     procedure AddFormByClass(FormClass: TClass; AOwner: TComponent);
 
     procedure ShowLoader;
@@ -903,6 +906,7 @@ end;
     property Form: TObject read GetForm;
     property TemplateMasterHTMLFile: string read GetTemplateMasterHTMLFile write SetTemplateMasterHTMLFile;
     property TemplatePageHTMLFile: string read GetTemplatePageHTMLFile write SetTemplatePageHTMLFile;
+    property TemplatePageJSFile: string read GetTemplatePageJSFile write SetTemplatePageJSFile;
  end;
 
 
