@@ -97,6 +97,7 @@ type
    FD2BridgeForm: TD2BridgeForm;
    FDestroying: Boolean;
    FLock: TMultiReadExclusiveWriteSynchronizer;
+   FTemplatePageJSFile: string;
    procedure SetName(AName: String); reintroduce;
    function GetName: String; reintroduce;
    function GetControls: TList<IPrismControl>;
@@ -133,6 +134,9 @@ type
    function GetOnUpload: TOnUpload;
    procedure SetOnUpload(const Value: TOnUpload);
    function GetServerControlsUpdating: boolean;
+   procedure SetTemplatePageJSFile(const Value: string);
+   function GetTemplatePageJSFile: string;
+
   protected
 {$IFDEF FPC}
    function GetFormUUID: string;
@@ -212,6 +216,7 @@ type
    property ControlsPrefix: String read GetControlsPrefix;
    property EnableControlsPrefix: Boolean read GetEnableControlsPrefix;
    property FormTimer: TPrismFormTimer read FTimerObserver write FTimerObserver;
+   property TemplatePageJSFile: string read GetTemplatePageJSFile write SetTemplatePageJSFile;
   published
    property OnProcessHTML: TProcessHTMLNotify read FOnProcessHTML write FOnProcessHTML;
    property OnTagHTML: TOnTagHTML read FOnTagHTML write FOnTagHTML;
@@ -721,6 +726,11 @@ end;
 function TPrismForm.GetTemplatePageHTMLFile: string;
 begin
  Result:= FTemplatePageHTMLFile;
+end;
+
+function TPrismForm.GetTemplatePageJSFile: string;
+begin
+  Result := FTemplatePageJSFile;
 end;
 
 procedure TPrismForm.Initialize;
@@ -1366,6 +1376,11 @@ end;
 procedure TPrismForm.SetTemplatePageHTMLFile(AFilePageTemplate: string);
 begin
  FTemplatePageHTMLFile:= AFilePageTemplate;
+end;
+
+procedure TPrismForm.SetTemplatePageJSFile(const Value: string);
+begin
+  FTemplatePageJSFile := Value;
 end;
 
 procedure TPrismForm.Show;

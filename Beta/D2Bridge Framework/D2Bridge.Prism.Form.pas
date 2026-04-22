@@ -105,6 +105,7 @@ begin
 
  TemplateMasterHTMLFile:= TD2BridgePrismFramework(D2BridgePrismFramework).TemplateMasterHTMLFile;
  TemplatePageHTMLFile:= TD2BridgePrismFramework(D2BridgePrismFramework).TemplatePageHTMLFile;
+ TemplatePageJSFile:= TD2BridgePrismFramework(D2BridgePrismFramework).TemplatePageJSFile;
 
  //Include Controls for Nested Forms
  for I := 0 to D2Bridge.NestedCount-1 do
