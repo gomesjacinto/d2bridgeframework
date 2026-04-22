@@ -1064,7 +1064,7 @@ begin
       end;
 
 
-      c.WriteLn('HTTP/1.1 ' + ifThen(vPrismResponse.StatusMessage <> '', vPrismResponse.StatusMessage, HttpParseStatusCode(vPrismResponse.StatusCode)));
+      c.WriteLn('HTTP/1.1 ' + ifThen(vPrismResponse.StatusMessage <> '', HttpParseStatusCode(vPrismResponse.StatusCode, vPrismResponse.StatusMessage), HttpParseStatusCode(vPrismResponse.StatusCode)));
       if vPrismResponse.ContentType <> '' then
       c.WriteLn('Content-Type: '+vPrismResponse.ContentType+'; charset='+vPrismResponse.charset);
       for i:= 0 to pred(vPrismResponse.Headers.Count) do

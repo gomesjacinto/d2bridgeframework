@@ -152,8 +152,8 @@
             for (const tasksEl of KanbanCardsElements) {
                 let headerHeight = KanbanColumnsContainer.offsetTop + 120;                
                 if (isFlex) {
-                    if (headerHeight < 400)
-                    headerHeight = 400;
+                    if (headerHeight < 250)
+                    headerHeight = 250;
                     tasksEl.style.maxHeight = `calc(100vh - ${headerHeight}px)`;
                 } else {
                     tasksEl.style.maxHeight = "";

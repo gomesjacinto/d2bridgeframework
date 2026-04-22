@@ -360,6 +360,7 @@ end;
 procedure TD2BridgeRestRoute.ParseParams(AurlPath: string; AParams: TStrings);
 var
   RouteParts, UrlParts: TArray<string>;
+  vPart: string;
   I: Integer;
 begin
  AParams.Clear;
@@ -370,7 +371,13 @@ begin
  for I := 0 to High(RouteParts) do
  begin
   if (RouteParts[I].StartsWith(':')) then
-   AParams.Values[Copy(RouteParts[I], 2, MaxInt)] := UrlParts[I];
+  begin
+   vPart:= UrlParts[I];
+   if Pos('?', vPart) > 0 then
+    vPart:= UrlParts[I].Split(['?'])[0];
+
+   AParams.Values[Copy(RouteParts[I], 2, MaxInt)] := vPart;
+  end;
  end;
 end;
 

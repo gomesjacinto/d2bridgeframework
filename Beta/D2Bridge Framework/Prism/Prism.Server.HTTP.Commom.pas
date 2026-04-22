@@ -284,7 +284,9 @@ const
     (Code: 511; Text: 'Network Authentication Required')
   );
 
-function HttpParseStatusCode(const AStatusCode: string): string;
+function HttpParseStatusCode(const AStatusCode: string): string; overload;
+function HttpParseStatusCode(const AStatusCode, AStatusMessage: string): string; overload;
+
 
 implementation
 
@@ -700,6 +702,16 @@ begin
 
   // fallback if code not in known list
   Result := IntToStr(Code) + ' Unknown Status';
+end;
+
+function HttpParseStatusCode(const AStatusCode, AStatusMessage: string): string;
+var
+  I, Code: Integer;
+begin
+  if not TryStrToInt(AStatusCode, Code) then
+    Code := 404; // default fallback if parsing fails
+
+  Exit(IntToStr(Code) + ' ' + AStatusMessage);
 end;
 
 end.
