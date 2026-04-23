@@ -347,7 +347,7 @@ begin
   '  }' +
   '  try{' +
   '   grid.jqGrid("clearGridData")' +
-  '   .jqGrid("setGridParam", { data: d2bridgeGridData, datatype: "local" })' +
+  '   .jqGrid("setGridParam", { data: d2bridgeGridData, datatype: "local", rowNum: ' + IntToStr(FRecordsPerPage) + ' })' +
   '   .trigger("reloadGrid", { page: 1 });' +
   '   if((d2bridgeGridData.length === 0) || (grid.jqGrid("getDataIDs").length > 0)){' +
   '    d2bridgeGridLog("reload concluido com " + grid.jqGrid("getDataIDs").length + " linhas");' +
