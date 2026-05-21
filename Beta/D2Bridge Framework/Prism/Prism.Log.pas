@@ -59,7 +59,8 @@ type
     procedure Log(const SessionIdenty, ErrorForm, ErrorObject, ErrorEvent, ErrorMsg: string);
     procedure LogDiagnostic(const ACategory, AMessage: string);
     procedure LogSecurity(const AEvent: TSecurityEvent; const AIP, AUserAgent, ADescription: string; const AIsIPV6: boolean);
-    procedure LogAccess(const AIP, AUserAgent, ASessionUser, ASessionIdentity, APrismDescription: string);
+    procedure LogAccess(const AIP, AUserAgent, ASessionUser,
+    ASessionIdentity, APrismDescription: string);
   end;
 
 implementation
